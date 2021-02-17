@@ -18,7 +18,7 @@ MonoBehaviour:
   focusScalingFactor: 1
   flipY: 0
   submitDepth: 1
-  opaque: 0
+  opaque: 1
   useOcclusionMesh: 1
   depthSorting: 0
   depthTestRangeEnabled: 0

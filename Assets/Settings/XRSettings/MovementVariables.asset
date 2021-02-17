@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 504daabe182e6d9499df30892056a018, type: 3}
+  m_Name: MovementVariables
+  m_EditorClassIdentifier: 
+  gazeAngleMax: 90
+  gazeAngleMin: 45
+  moveSpeed: 1
+  rayCastDistance: 10
+  moveToPOI: 0
+  POIMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  teleMask:
+    serializedVersion: 2
+    m_Bits: 2048
