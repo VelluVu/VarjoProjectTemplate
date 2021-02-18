@@ -9,10 +9,6 @@ public class XRGazeMovement : IXRMovement
 {
     XRMovementSwitch control;
 
-    public delegate void GazePOIMoveDelegate(Transform target);
-    public static event GazePOIMoveDelegate onAbleToMove;
-    public static event GazePOIMoveDelegate onUnableToMove;
-
     public delegate void GazeMoveDelegate(Transform hmd);
     public static event GazeMoveDelegate onCorrectMoveAngle;
     public static event GazeMoveDelegate onNonCorrectMoveAngle;
@@ -32,15 +28,8 @@ public class XRGazeMovement : IXRMovement
     }
 
     public void UpdateState()
-    {
-        if(control.movementVariables.moveToPOI)
-        {
-            POIGazeMovement();
-        }
-        else
-        {
-            GazeMovement();
-        }
+    { 
+        GazeMovement();   
     }
 
     private void GazeMovement()
@@ -59,11 +48,11 @@ public class XRGazeMovement : IXRMovement
                 onCorrectMoveAngle?.Invoke(control.rig.hmd);
             }
 
-            if(control.rig.onPrimaryButtonPress)
+            if(control.rig.input.onPrimaryButtonPress)
             {
                 Vector3 moveDir = new Vector3(control.rig.hmd.transform.forward.x, control.rig.transform.forward.y, control.rig.hmd.transform.forward.z);
                 control.rig.transform.position += moveDir * control.movementVariables.moveSpeed * Time.deltaTime;
-                onCorrectMoveAngle?.Invoke(control.rig.hmd);    
+                //onCorrectMoveAngle?.Invoke(control.rig.hmd);    
             }
         }
         else
@@ -76,45 +65,5 @@ public class XRGazeMovement : IXRMovement
         }
     }
 
-    public void POIGazeMovement()
-    {
-        RaycastHit hit; 
-        bool hits = Physics.Raycast(control.rig.hmd.transform.position, control.rig.hmd.transform.forward, out hit, control.movementVariables.rayCastDistance, control.movementVariables.POIMask);
-        
-        if(hits)
-        {
-            bool closeToTarget = Vector3.Distance(control.rig.hmd.position, hit.transform.position) < 0.5f;
-            
-            if(!closeToTarget)
-            {
-                if(!canMove)
-                {
-                    canMove = true;
-                    onAbleToMove?.Invoke(hit.transform);
-                }
-                if(control.rig.onPrimaryButtonPress)
-                {
-                    Vector3 moveDir = (hit.transform.position - control.rig.hmd.position).normalized;
-                    moveDir = new Vector3(moveDir.x, control.rig.transform.forward.y,moveDir.z);
-                    control.rig.transform.position += moveDir * control.movementVariables.moveSpeed * Time.deltaTime;
-                }
-            }
-            else
-            {
-                if(canMove)
-                {
-                    canMove = false;
-                    onUnableToMove?.Invoke(hit.transform);
-                }
-            }
-        }
-        else
-        {
-            if(canMove)
-            {
-                canMove = false;
-                onUnableToMove?.Invoke(hit.transform);
-            }
-        }
-    }
+    
 }

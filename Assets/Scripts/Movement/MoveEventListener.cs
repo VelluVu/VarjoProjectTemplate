@@ -6,44 +6,64 @@ using UnityEngine;
 public class MoveEventListener : MonoBehaviour
 {
 
-    public GameObject dirArrowPrefab;
-    public GameObject dirArrow;
+    [SerializeField] GameObject dirArrowPrefab;
+    GameObject dirArrow;
+
+    [SerializeField] GameObject teleportIndicatorPrefab;
+    GameObject teleportIndicator;
 
     MaterialSwapper matSwap;
+    Transform hmd;
 
     private void OnEnable() {
-        XRGazeMovement.onUnableToMove += CantMove;
-        XRGazeMovement.onAbleToMove += CanMove;
-        XRGazeMovement.onCorrectMoveAngle += ShowVisual;
-        XRGazeMovement.onNonCorrectMoveAngle += HideVisual;
-    } 
+        XRPOIGazeMovement.onUnableToMove += CantMove;
+        XRPOIGazeMovement.onAbleToMove += CanMove;
+        XRGazeMovement.onCorrectMoveAngle += ShowGazeVisual;
+        XRGazeMovement.onNonCorrectMoveAngle += HideGazeVisual;
+        XRTeleportMovement.onTeleportPossible += ShowTeleportIndicator;
+        XRTeleportMovement.onTeleportNotPossible += HideTeleportIndicator;
+    }
 
     private void OnDisable() {
-        XRGazeMovement.onUnableToMove -= CantMove;
-        XRGazeMovement.onAbleToMove -= CanMove;
-        XRGazeMovement.onCorrectMoveAngle -= ShowVisual;
-        XRGazeMovement.onNonCorrectMoveAngle -= HideVisual;
+        XRPOIGazeMovement.onUnableToMove -= CantMove;
+        XRPOIGazeMovement.onAbleToMove -= CanMove;
+        XRGazeMovement.onCorrectMoveAngle -= ShowGazeVisual;
+        XRGazeMovement.onNonCorrectMoveAngle -= HideGazeVisual;
+        XRTeleportMovement.onTeleportPossible -= ShowTeleportIndicator;
+        XRTeleportMovement.onTeleportNotPossible -= HideTeleportIndicator;
     }
 
-    private void HideVisual(Transform hmd)
+    private void Update() {
+        if(dirArrow != null && hmd != null && dirArrow.activeSelf)
+        {
+            
+            Vector3 position = Vector3.ProjectOnPlane(hmd.forward, Vector2.up) + new Vector3(hmd.position.x, 0.1f, hmd.position.z);
+            dirArrow.transform.position = position;
+            dirArrow.transform.rotation = Quaternion.Euler(new Vector3(90.01f, hmd.rotation.eulerAngles.y, 0));
+        }
+    }
+
+    private void HideGazeVisual(Transform hmd)
     {
         //TODO : hide visual
-        dirArrow.SetActive(false);
+        if(dirArrow != null)
+            dirArrow.SetActive(false);
     }
 
-    private void ShowVisual(Transform hmd)
+    private void ShowGazeVisual(Transform hmd)
     {
-        Vector3 position = Vector3.ProjectOnPlane(hmd.forward, Vector2.up) + new Vector3(hmd.position.x, 0.1f, hmd.position.z);
+        this.hmd = hmd;
+        Vector3 position = Vector3.ProjectOnPlane(hmd.forward, Vector2.up) + new Vector3(this.hmd.position.x, 0.1f, this.hmd.position.z);
         //TODO : show visuals
         if(dirArrow == null)
         {
-            dirArrow = Instantiate(dirArrowPrefab, position, Quaternion.Euler(new Vector3(90.01f, hmd.rotation.eulerAngles.y, 0)));
+            dirArrow = Instantiate(dirArrowPrefab, position, Quaternion.Euler(new Vector3(90.01f, this.hmd.rotation.eulerAngles.y, 0)));
         }
         else
         {
             dirArrow.SetActive(true);
             dirArrow.transform.position = position;
-            dirArrow.transform.rotation = Quaternion.Euler(new Vector3(90.01f, hmd.rotation.eulerAngles.y, 0));
+            dirArrow.transform.rotation = Quaternion.Euler(new Vector3(90.01f, this.hmd.rotation.eulerAngles.y, 0));
         }
     }
 
@@ -74,6 +94,35 @@ public class MoveEventListener : MonoBehaviour
             matSwap = target.GetComponent<MaterialSwapper>();
             if(matSwap != null)
                 matSwap.SetNormalMaterial();
+        }
+    }
+
+    private void HideTeleportIndicator(Transform hmd, RaycastHit hit)
+    {
+        
+        if(teleportIndicator != null)
+        {
+            teleportIndicator.SetActive(false);
+        }
+    }
+
+    private void ShowTeleportIndicator(Transform hmd, RaycastHit hit)
+    {
+        if(hmd == null)
+        {
+            this.hmd = hmd;
+        }
+
+        if(teleportIndicator == null)
+        {
+            teleportIndicator = Instantiate(teleportIndicatorPrefab, hit.point, teleportIndicatorPrefab.transform.rotation);
+            teleportIndicator.transform.rotation = Quaternion.FromToRotation(teleportIndicator.transform.up,hit.normal)*teleportIndicator.transform.rotation;
+        }
+        else
+        {
+            teleportIndicator.SetActive(true);
+            teleportIndicator.transform.position = hit.point;
+            teleportIndicator.transform.rotation = Quaternion.FromToRotation(teleportIndicator.transform.up,hit.normal)*teleportIndicator.transform.rotation;
         }
     }
 }

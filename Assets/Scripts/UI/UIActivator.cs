@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class UIActivator : MonoBehaviour
 {
-    [SerializeField]XRCustomRig rig;
+    XRCustomRig rig;
     [SerializeField]float raycastLength = 40f;
     [SerializeField]LayerMask uiActivateMask;
 

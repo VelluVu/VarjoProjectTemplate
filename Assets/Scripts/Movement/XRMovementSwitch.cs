@@ -10,8 +10,10 @@ public class XRMovementSwitch : MonoBehaviour
     public MovementVariableConfig movementVariables;   
     public Transform[] Wps; //Waypoints for Lerp movement.
     [HideInInspector]public XRCustomRig rig;
+    MovementType currentMovementType;
     IXRMovement currentXRMovement;
     XRGazeMovement xRGazeMovement;
+    XRPOIGazeMovement xRPOIGazeMovement;
     XRLerpMovement xRLerpMovement;
     XRTeleportMovement xRTeleportMovement;
 
@@ -21,16 +23,15 @@ public class XRMovementSwitch : MonoBehaviour
     private void Awake() {
         rig = GetComponent<XRCustomRig>();
         xRGazeMovement = new XRGazeMovement();
+        xRPOIGazeMovement = new XRPOIGazeMovement();
         xRLerpMovement = new XRLerpMovement();
         xRTeleportMovement = new XRTeleportMovement();
     }
 
-    private void OnEnable() {
-        XRSettings.onSettingLoads += CheckMovementType;
+    private void OnEnable() {      
         XRSettings.onSettingChange += CheckMovementType;
     }
-    private void OnDisable() {
-        XRSettings.onSettingLoads -= CheckMovementType;
+    private void OnDisable() {    
         XRSettings.onSettingChange -= CheckMovementType;
     }
 
@@ -54,6 +55,9 @@ public class XRMovementSwitch : MonoBehaviour
             case MovementType.Gaze:
                 currentXRMovement = xRGazeMovement;
                 break;
+            case MovementType.POIGaze:
+                currentXRMovement = xRPOIGazeMovement;
+                break;
             case MovementType.Lerp:
                 currentXRMovement = xRLerpMovement;
                 break;
@@ -63,20 +67,22 @@ public class XRMovementSwitch : MonoBehaviour
             default:
                 break;
         }
+        currentMovementType = newSettings.movementType;
 
         ready = true;
         currentXRMovement.StartState(this);
     }
 
-    public IXRMovement GetCurrentMovementType()
+    public MovementType GetCurrentMovementType()
     {
-        return currentXRMovement;
+        return currentMovementType;
     }
 }
 
 public enum MovementType
 {
     Gaze,
+    POIGaze,
     Lerp,
     Teleport,
 }
