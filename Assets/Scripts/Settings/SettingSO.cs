@@ -7,6 +7,8 @@
 public class SettingSO : ScriptableObject
 {
     public MovementType movementType;
+    public bool controllersInUse;
+    public PreferredHand hand;
 
     public delegate void SettingSODelegate(SettingSO settings);
     public event SettingSODelegate onChange;

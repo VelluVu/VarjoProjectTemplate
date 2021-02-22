@@ -1,6 +1,9 @@
 
 using UnityEngine;
 
+/// <summary>
+/// This Class triggers the lerp movement.
+/// </summary>
 public class LerpMovementTrigger
 {
     

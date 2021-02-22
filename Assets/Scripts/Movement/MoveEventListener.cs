@@ -14,6 +14,7 @@ public class MoveEventListener : MonoBehaviour
 
     MaterialSwapper matSwap;
     Transform hmd;
+    Transform controller;
 
     private void OnEnable() {
         XRPOIGazeMovement.onUnableToMove += CantMove;
@@ -97,7 +98,7 @@ public class MoveEventListener : MonoBehaviour
         }
     }
 
-    private void HideTeleportIndicator(Transform hmd, RaycastHit hit)
+    private void HideTeleportIndicator(RaycastHit hit)
     {
         
         if(teleportIndicator != null)
@@ -106,13 +107,8 @@ public class MoveEventListener : MonoBehaviour
         }
     }
 
-    private void ShowTeleportIndicator(Transform hmd, RaycastHit hit)
+    private void ShowTeleportIndicator(RaycastHit hit)
     {
-        if(hmd == null)
-        {
-            this.hmd = hmd;
-        }
-
         if(teleportIndicator == null)
         {
             teleportIndicator = Instantiate(teleportIndicatorPrefab, hit.point, teleportIndicatorPrefab.transform.rotation);

@@ -30,7 +30,7 @@ public class XRPOIGazeMovement : IXRMovement
     public void POIGazeMovement()
     {
         RaycastHit hit; 
-        bool hits = Physics.Raycast(control.rig.hmd.transform.position, control.rig.hmd.transform.forward, out hit, control.movementVariables.rayCastDistance, control.movementVariables.POIMask);
+        bool hits = Physics.Raycast(control.rig.hmd.transform.position, control.rig.hmd.transform.forward, out hit, control.movementVariables.raycastDistance, control.movementVariables.POIMask);
         
         if(hits)
         {

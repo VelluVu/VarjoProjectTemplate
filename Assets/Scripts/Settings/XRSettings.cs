@@ -12,11 +12,6 @@ public class XRSettings : Singleton<XRSettings>
     public SettingSO settings;
     MovementType previousMovementType;
 
-    private void Awake() {
-        //onSettingLoads?.Invoke(settings);
-        previousMovementType = settings.movementType;
-    }
-
     private void Start() {
         settings.Init();
     }
@@ -33,11 +28,20 @@ public class XRSettings : Singleton<XRSettings>
         onSettingChange?.Invoke(newSettings);
     }
 
-    public void ChangeMovementType(MovementType type)
+    public void ChangeMovementType(MovementType newMovementType)
     {
-        if(settings.movementType != type)
+        if(settings.movementType != newMovementType)
         {        
-            settings.movementType = type;
+            settings.movementType = newMovementType;
+            onSettingChange?.Invoke(settings);
+        }
+    }
+
+    public void ChangePreferredHand(PreferredHand newHand)
+    {
+        if(settings.hand != newHand)
+        {        
+            settings.hand = newHand;
             onSettingChange?.Invoke(settings);
         }
     }

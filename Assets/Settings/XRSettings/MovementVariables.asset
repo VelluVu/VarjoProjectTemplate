@@ -15,9 +15,13 @@ MonoBehaviour:
   gazeAngleMax: 90
   gazeAngleMin: 45
   moveSpeed: 1
-  rayCastDistance: 10
+  raycastDistance: 5
   teleportCooldown: 0.5
   lerpValue: 0.8334423
+  lerpSpeed: 0.1
   POIMask:
     serializedVersion: 2
     m_Bits: 1024
+  raycastLayerMask:
+    serializedVersion: 2
+    m_Bits: 2049

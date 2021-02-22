@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// This class is switching the movement type.
+/// This class is working as a statepattern for movementstyles and switching the movementstyle when settings change.
 /// </summary>
 public class XRMovementSwitch : MonoBehaviour
 {
-    public MovementVariableConfig movementVariables;   
+    public MovementVariableConfig movementVariables;
+    [Tooltip("Automatically Searches the WPS by Waypoint parent gameObject name if this array is left empty!")]
     public Transform[] Wps; //Waypoints for Lerp movement.
     [HideInInspector]public XRCustomRig rig;
+    [HideInInspector]public PreferredHand preferredHand;
+    [HideInInspector]public bool usingControllers;
     MovementType currentMovementType;
     IXRMovement currentXRMovement;
     XRGazeMovement xRGazeMovement;
@@ -17,15 +20,46 @@ public class XRMovementSwitch : MonoBehaviour
     XRLerpMovement xRLerpMovement;
     XRTeleportMovement xRTeleportMovement;
 
+    
+
     bool ready = false;
-    bool isLoaded => XRCustomRig.IsPresent && ready;
 
     private void Awake() {
         rig = GetComponent<XRCustomRig>();
+        InitMovementStyles();
+        InitWaypointArray();
+    }
+
+    public void InitMovementStyles()
+    {
         xRGazeMovement = new XRGazeMovement();
         xRPOIGazeMovement = new XRPOIGazeMovement();
         xRLerpMovement = new XRLerpMovement();
         xRTeleportMovement = new XRTeleportMovement();
+    }
+
+    public void InitWaypointArray()
+    {
+        if(Wps == null || Wps.Length == 0)
+        {
+            GameObject waypoints = GameObject.Find("Waypoints");
+            if(waypoints != null)
+            {
+                Wps = new Transform[waypoints.transform.childCount];
+                for (var i = 0; i < Wps.Length; i++)
+                {
+                    Wps[i] = waypoints.transform.GetChild(i);   
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Could not populate the Wps array for LerpMovement. Can't find the Waypoints object from scene hierarchy!");
+            }
+        }
+        else
+        {
+            Debug.Log("Wps array for LerpMovement is custom filled.");
+        }
     }
 
     private void OnEnable() {      
@@ -49,6 +83,8 @@ public class XRMovementSwitch : MonoBehaviour
             currentXRMovement.ExitState();
 
         ready = false;
+        preferredHand = newSettings.hand;
+        usingControllers = newSettings.controllersInUse;
         
         switch (newSettings.movementType)
         {

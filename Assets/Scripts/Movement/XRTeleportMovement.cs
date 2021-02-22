@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.XR;
 
 /// <summary>
@@ -9,14 +7,13 @@ using UnityEngine.XR;
 public class XRTeleportMovement : IXRMovement, ICooldown
 {
     XRMovementSwitch control;
-
-    public delegate void XRTeleportDelegate(Transform hmd, RaycastHit hit);
+    RaycastHit hit;
+    public delegate void XRTeleportDelegate(RaycastHit hit);
     public static event XRTeleportDelegate onTeleportPossible;
     public static event XRTeleportDelegate onTeleportNotPossible;
 
     bool canTele = false;
-    bool recentlyTeleported = false;
-
+   
     int id = IDTable.teleMovementCDID;
     float cooldownDuration = 0.5f;
 
@@ -29,52 +26,77 @@ public class XRTeleportMovement : IXRMovement, ICooldown
         this.control = control;
         id = IDTable.teleMovementCDID;
         cooldownDuration = control.movementVariables.teleportCooldown;
+
+        XRInputManager.onHMDPrimaryButtonDown += OnHMDButtonDown;
+        XRInputManager.onLeftControllerPrimaryButtonDown += OnLeftControllerButtonDown;
+        XRInputManager.onRightControllerPrimaryButtonDown += OnRightControllerButtonDown;
+
         Debug.Log("Chosen MovementType " + this);
     }
 
     public void ExitState()
     {
+        XRInputManager.onHMDPrimaryButtonDown -= OnHMDButtonDown;
+        XRInputManager.onLeftControllerPrimaryButtonDown -= OnLeftControllerButtonDown;
+        XRInputManager.onRightControllerPrimaryButtonDown -= OnRightControllerButtonDown;
         Debug.Log("Exited MovementType " + this);
     }
-    
+
+    private void OnHMDButtonDown()
+    {
+        if(canTele)
+        {
+            Teleport();
+        }
+    }
+    private void OnLeftControllerButtonDown()
+    {
+        if(canTele && control.preferredHand == PreferredHand.Left)
+        {
+            Teleport();
+        }
+    }
+    private void OnRightControllerButtonDown()
+    {
+        if(canTele && control.preferredHand == PreferredHand.Right)
+        {
+            Teleport();
+        }
+    }
+
     public void UpdateState()
     {
-        //TODO : Make teleport movement that works with headset button.
-
-        RaycastHit hit;
-        bool hits = Physics.Raycast(control.rig.hmd.position, control.rig.hmd.forward, out hit, control.movementVariables.rayCastDistance);
-
-        if(!control.rig.cooldownSystem.IsOnCooldown(id))
+        if(control.usingControllers)
         {
-            recentlyTeleported = false;
+            WithControllers();
         }
+        else
+        {
+            WithHMD();
+        } 
+    }
 
+    void WithControllers()
+    {
+        Transform c = control.rig.GetControllerTransform(control.preferredHand);
+        bool hits = Physics.Raycast(c.position, c.forward, out hit, control.movementVariables.raycastDistance, control.movementVariables.raycastLayerMask);
+        
         if(hits)
         {
             if(hit.transform.gameObject.layer == LayerMask.NameToLayer("TeleMask"))
             {
-                onTeleportPossible?.Invoke(control.rig.hmd,hit);
+                onTeleportPossible?.Invoke(hit);
                 if(!canTele)
                 {
                     canTele = true;           
-                }
-                if(control.rig.input.onPrimaryButtonPress)
-                {
-                    
-                    if(!recentlyTeleported)
-                    {   
-                        recentlyTeleported = true;
-                        control.rig.transform.position = hit.point;
-                        control.rig.cooldownSystem.AddCooldown(this);
-                    }
-                }
+                }       
             }
             else
             {
                 if(canTele)
                 {
                     canTele = false;
-                    onTeleportNotPossible?.Invoke(control.rig.hmd,hit);
+                    onTeleportNotPossible?.Invoke(hit);
                 }
             }
         }
@@ -83,9 +105,52 @@ public class XRTeleportMovement : IXRMovement, ICooldown
             if(canTele)
             {
                 canTele = false;
-                onTeleportNotPossible?.Invoke(control.rig.hmd,hit);
+                onTeleportNotPossible?.Invoke(hit);
             }
         }
+    }
+
+    void WithHMD()
+    {
+        //TODO : Make teleport movement that works with headset button.
+
         
+        bool hits = Physics.Raycast(control.rig.hmd.position, control.rig.hmd.forward, out hit, control.movementVariables.raycastDistance, control.movementVariables.raycastLayerMask);
+
+        if(hits)
+        {
+            if(hit.transform.gameObject.layer == LayerMask.NameToLayer("TeleMask"))
+            {
+                onTeleportPossible?.Invoke(hit);
+                if(!canTele)
+                {
+                    canTele = true;           
+                }
+            }
+            else
+            {
+                if(canTele)
+                {
+                    canTele = false;
+                    onTeleportNotPossible?.Invoke(hit);
+                }
+            }
+        }
+        else
+        {
+            if(canTele)
+            {
+                canTele = false;
+                onTeleportNotPossible?.Invoke(hit);
+            }
+        }
+    }
+
+    void Teleport()
+    {
+        if(control.usingControllers)
+            XRCustomRig.Haptic(control.rig.GetControllerDevice(control.preferredHand), 0.5f, 0.1f);
+
+        control.rig.transform.position = hit.point;
     }
 }
