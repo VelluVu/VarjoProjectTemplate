@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,15 +7,8 @@ using UnityEngine;
 /// For testing lerp movement from primary button input.
 /// Suggestion for developer : Make Custom class or game event which triggers the function in LerpMovementTrigger when need to move player to new position. 
 /// </summary>
-public class TestLerpMovement : MonoBehaviour, ICooldown
+public class TestLerpMovement : MonoBehaviour
 {
-
-    [SerializeField] int id = IDTable.lerpTestCDID;
-    [SerializeField] float cooldownDuration = 1f;
-
-    public int Id => id;
-
-    public float CooldownDuration => cooldownDuration;
 
     public int waypointToMove = 0;
 
@@ -22,31 +16,35 @@ public class TestLerpMovement : MonoBehaviour, ICooldown
 
     private void Awake() {
         control = GetComponent<XRMovementSwitch>();
-        id = IDTable.lerpTestCDID;
     }
 
-    //private void Start() {
-        //Debug.Log(this + "Cooldown ID : " + Id);
-    //}
+    private void OnEnable() {
+        XRInputManager.onHMDPrimaryButtonDown += OnHMDButtonDown;
+        XRInputManager.onLeftControllerPrimaryButtonDown += OnLeftControllerButtonDown;
+        XRInputManager.onRightControllerPrimaryButtonDown += OnRightControllerButtonDown;
+    }
 
-    private void Update() {
+    private void OnDisable() {
+        XRInputManager.onHMDPrimaryButtonDown -= OnHMDButtonDown;
+        XRInputManager.onLeftControllerPrimaryButtonDown -= OnLeftControllerButtonDown;
+        XRInputManager.onRightControllerPrimaryButtonDown -= OnRightControllerButtonDown;
+    }
+  
+    private void OnRightControllerButtonDown()
+    {
+        LerpMovementTrigger.TriggerMovement(waypointToMove);
+    }
 
-        if(control.GetCurrentMovementType() != MovementType.Lerp)
-        {
-            return;
-        }
+    private void OnLeftControllerButtonDown()
+    {
+        LerpMovementTrigger.TriggerMovement(waypointToMove);
+    }
 
-        if(control.rig.cooldownSystem.IsOnCooldown(id))
-        {
-            return;
-        }
-
-        if(control.rig.input.onPrimaryButtonPress)
-        {         
-            LerpMovementTrigger.TriggerMovement(waypointToMove);
-            control.rig.cooldownSystem.AddCooldown(this);
-        }
-
+    private void OnHMDButtonDown()
+    {
+                
+        LerpMovementTrigger.TriggerMovement(waypointToMove);       
+        
     }
 
 }

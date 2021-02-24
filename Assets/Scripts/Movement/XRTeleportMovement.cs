@@ -4,7 +4,7 @@ using UnityEngine.XR;
 /// <summary>
 /// This class does the teleportation movement.
 /// </summary>
-public class XRTeleportMovement : IXRMovement, ICooldown
+public class XRTeleportMovement : IXRMovement
 {
     XRMovementSwitch control;
     RaycastHit hit;
@@ -13,19 +13,10 @@ public class XRTeleportMovement : IXRMovement, ICooldown
     public static event XRTeleportDelegate onTeleportNotPossible;
 
     bool canTele = false;
-   
-    int id = IDTable.teleMovementCDID;
-    float cooldownDuration = 0.5f;
-
-    public int Id => id;
-
-    public float CooldownDuration => cooldownDuration;
 
     public void StartState(XRMovementSwitch control)
     {
         this.control = control;
-        id = IDTable.teleMovementCDID;
-        cooldownDuration = control.movementVariables.teleportCooldown;
 
         XRInputManager.onHMDPrimaryButtonDown += OnHMDButtonDown;
         XRInputManager.onLeftControllerPrimaryButtonDown += OnLeftControllerButtonDown;
@@ -39,6 +30,7 @@ public class XRTeleportMovement : IXRMovement, ICooldown
         XRInputManager.onHMDPrimaryButtonDown -= OnHMDButtonDown;
         XRInputManager.onLeftControllerPrimaryButtonDown -= OnLeftControllerButtonDown;
         XRInputManager.onRightControllerPrimaryButtonDown -= OnRightControllerButtonDown;
+        onTeleportNotPossible?.Invoke(hit);
         Debug.Log("Exited MovementType " + this);
     }
 

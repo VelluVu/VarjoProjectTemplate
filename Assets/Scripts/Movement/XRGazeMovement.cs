@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// This class does the Gaze movement.
@@ -24,6 +22,7 @@ public class XRGazeMovement : IXRMovement
 
     public void ExitState()
     {
+        onNonCorrectMoveAngle?.Invoke(control.rig.hmd);
         Debug.Log("Exited MovementType " + this);
     }
 
@@ -47,12 +46,19 @@ public class XRGazeMovement : IXRMovement
                 canMove = true;
                 onCorrectMoveAngle?.Invoke(control.rig.hmd);
             }
-
-            if(control.rig.input.onPrimaryButtonPress)
+            if(control.usingControllers)
             {
-                Vector3 moveDir = new Vector3(control.rig.hmd.transform.forward.x, control.rig.transform.forward.y, control.rig.hmd.transform.forward.z);
-                control.rig.transform.position += moveDir * control.movementVariables.moveSpeed * Time.deltaTime;
-                //onCorrectMoveAngle?.Invoke(control.rig.hmd);    
+                if(control.rig.input.GetPrimaryButtonControlPress(control.preferredHand))
+                {
+                    MoveToGazeDirection();
+                }    
+            }
+            else
+            {
+                if(control.rig.input.hmdPrimaryButtonPress)
+                {
+                    MoveToGazeDirection();   
+                }
             }
         }
         else
@@ -64,6 +70,9 @@ public class XRGazeMovement : IXRMovement
             }
         }
     }
-
-    
+    void MoveToGazeDirection()
+    {
+        Vector3 moveDir = new Vector3(control.rig.hmd.transform.forward.x, control.rig.transform.forward.y, control.rig.hmd.transform.forward.z);
+        control.rig.transform.position += moveDir * control.movementVariables.moveSpeed * Time.deltaTime;
+    }
 }

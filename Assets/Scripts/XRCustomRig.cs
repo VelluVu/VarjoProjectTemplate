@@ -5,14 +5,14 @@ using UnityEngine;
 using UnityEngine.XR;
 
 /// <summary>
-/// Represents the rig and holds static rig related values.
+/// Represents the rig and contains the rig related variables and functions.
 /// </summary>
 public class XRCustomRig : MonoBehaviour
 {
    
     public Transform hmd;
-    public Transform leftController;
-    public Transform rightController;
+    public XRCustomController leftController;
+    public XRCustomController rightController;
     public Transform body;
     
     [Header("Autosearches the references below!")]
@@ -22,17 +22,24 @@ public class XRCustomRig : MonoBehaviour
     InputDevice headMounted;
     List<InputDevice> controllers = new List<InputDevice>();
 
-    [HideInInspector]public bool IsPresent;
-    [HideInInspector]public bool HasControllers;
-    [HideInInspector]public bool HasLeftController;
-    [HideInInspector]public bool HasRightController;
+    [HideInInspector]public bool isPresent;
+    [HideInInspector]public bool hasControllers;
+    [HideInInspector]public bool hasLeftController;
+    [HideInInspector]public bool hasRightController;
+
+    public delegate void DevicesDelegate(List<InputDevice> devices);
+    public static event DevicesDelegate onControllersArePresent;
+    public static event DevicesDelegate onControllersNotPresent;
 
     public delegate void DeviceDelegate(InputDevice controller);
+    public static event DeviceDelegate onHeadMountedDeviceIsPresent;
+    public static event DeviceDelegate onLeftControllerIsPresent;
+    public static event DeviceDelegate onRightControllerIsPresent;
 
-    public static event DeviceDelegate headMountedDeviceIsPresent;
-    public static event DeviceDelegate controllerIsPresent;
-    public static event DeviceDelegate leftControllerIsPresent;
-    public static event DeviceDelegate rightControllerIsPresent;
+    public delegate void DeviceDisconnectedDelegate();
+    public static event DeviceDisconnectedDelegate onHeadMountedDeviceDisconnected;
+    public static event DeviceDisconnectedDelegate onLeftControllerDisconnected;
+    public static event DeviceDisconnectedDelegate onRightControllerDisconnected;
 
     private void Awake() {
         if(input == null)
@@ -41,14 +48,69 @@ public class XRCustomRig : MonoBehaviour
             cooldownSystem = FindObjectOfType<CooldownSystem>();
     }
 
-    private void Start() 
-    {      
-        StartCoroutine(CheckDevicePresence());      
+    private void OnEnable() {
+        InputDevices.deviceDisconnected += DeviceDisconnected;
+        InputDevices.deviceConnected += DeviceConnected;
+    }
+
+    private void OnDisable() {
+        InputDevices.deviceDisconnected -= DeviceDisconnected;
+        InputDevices.deviceConnected -= DeviceConnected;
+    }
+
+    void DeviceDisconnected(InputDevice device)
+    {
+        Debug.Log(device.characteristics + " Disconnected!");
+        if(device.characteristics.HasFlag(InputDeviceCharacteristics.Controller))
+        {
+            CheckControllers();
+        }
+        if(device.characteristics.HasFlag(InputDeviceCharacteristics.Left))
+        {
+            onLeftControllerDisconnected?.Invoke();
+            hasLeftController = false;
+        }
+        else if(device.characteristics.HasFlag(InputDeviceCharacteristics.Right))
+        {
+            onRightControllerDisconnected?.Invoke();
+            hasRightController = false;         
+        }
+        else if(device.characteristics.HasFlag(InputDeviceCharacteristics.HeadMounted))
+        {
+            isPresent = false;
+            onHeadMountedDeviceDisconnected?.Invoke();
+        }
+    }
+
+    void DeviceConnected(InputDevice device)
+    {
+        Debug.Log(device.characteristics + " Connected!");
+
+        if(device.characteristics.HasFlag(InputDeviceCharacteristics.Controller))
+        {
+            CheckControllers();
+        }
+        if(device.characteristics.HasFlag(InputDeviceCharacteristics.Left))
+        {
+            onLeftControllerIsPresent?.Invoke(device);
+            hasLeftController = true;
+        }
+        else if(device.characteristics.HasFlag(InputDeviceCharacteristics.Right))
+        {    
+            onRightControllerIsPresent?.Invoke(device);
+            hasRightController = true;
+        }
+        else if(device.characteristics.HasFlag(InputDeviceCharacteristics.HeadMounted))
+        {       
+            isPresent = true;
+            onHeadMountedDeviceIsPresent?.Invoke(device);
+            headMounted = device;
+        }
     }
 
     private void Update() 
     {
-         if(IsPresent)
+         if(isPresent)
          {
             AdjustCollider();
          }
@@ -71,14 +133,14 @@ public class XRCustomRig : MonoBehaviour
 
     public Transform GetControllerTransform(PreferredHand hand)
     {
-        Transform c = rightController;
+        Transform c = rightController.transform;
         if(hand == PreferredHand.Right)
         {
-            c = rightController;
+            c = rightController.transform;
         }
         if(hand == PreferredHand.Left)
         {
-            c = leftController;
+            c = leftController.transform;
         }
 
         return c;
@@ -126,73 +188,20 @@ public class XRCustomRig : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Finds the input devices on runtime.
-    /// </summary>
-    /// <returns></returns>
-    IEnumerator CheckDevicePresence()
+    public void CheckControllers()
     {
-        while(true)
+        InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Controller, controllers);
+    
+        if(controllers.Count == 0 && hasControllers)
         {
-            
-            headMounted = InputDevices.GetDeviceAtXRNode(XRNode.Head);
-            InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Controller, controllers);
-            Debug.Log("Amount of controllers: " + controllers.Count);
-
-            if(controllers.Count == 0)
-            {
-                HasControllers = false;
-                HasLeftController = false;
-                HasRightController = false;
-            }
-            
-            if(!headMounted.isValid)
-            {
-                IsPresent = false;
-            }
-
-            //Debug.Log("Characteristics of headmounted device <HMD>: " + headMounted.characteristics);
-            if(headMounted.isValid && !IsPresent)
-            {
-                IsPresent = true;      
-                headMountedDeviceIsPresent?.Invoke(headMounted);      
-            }
-
-            Debug.Log("Presence of hmd: " + IsPresent);
-            
-            int val = 1;
-
-            foreach (var item in controllers)
-            {
-                //Debug.Log(val + " Controller characteristics: " + item.characteristics + " IsValid: " + item.isValid );
-                if(item.isValid && !HasControllers)
-                {
-                    controllerIsPresent?.Invoke(item);
-                    HasControllers = true;
-                }
-
-                if(item.characteristics.HasFlag(InputDeviceCharacteristics.Left) && item.isValid && !HasLeftController)
-                {
-                    Debug.Log("Left Controller found! " + val);
-                    leftControllerIsPresent?.Invoke(item);
-                    HasLeftController = item.isValid;
-                }
-
-                if(item.characteristics.HasFlag(InputDeviceCharacteristics.Right) && item.isValid && !HasRightController)
-                {
-                    Debug.Log("Right Controller Found " + val);               
-                    rightControllerIsPresent?.Invoke(item);
-                    HasRightController = item.isValid;
-                }
-
-                //Haptic(item, 0.5f, 0.2f);
-                
-                val += 1;
-            }
-           
-            
-            yield return new WaitForSeconds(10f);
-        } 
+            hasControllers = false;
+            onControllersNotPresent?.Invoke(controllers);
+        }
+        if(controllers.Count > 0)
+        {
+            onControllersArePresent?.Invoke(controllers);
+            hasControllers = true;
+        }
     }
 
     IEnumerator Cooldown(float time, bool state)

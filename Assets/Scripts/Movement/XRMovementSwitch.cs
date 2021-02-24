@@ -20,8 +20,6 @@ public class XRMovementSwitch : MonoBehaviour
     XRLerpMovement xRLerpMovement;
     XRTeleportMovement xRTeleportMovement;
 
-    
-
     bool ready = false;
 
     private void Awake() {
@@ -83,7 +81,7 @@ public class XRMovementSwitch : MonoBehaviour
             currentXRMovement.ExitState();
 
         ready = false;
-        preferredHand = newSettings.hand;
+        preferredHand = newSettings.currentHand;
         usingControllers = newSettings.controllersInUse;
         
         switch (newSettings.movementType)
@@ -113,12 +111,4 @@ public class XRMovementSwitch : MonoBehaviour
     {
         return currentMovementType;
     }
-}
-
-public enum MovementType
-{
-    Gaze,
-    POIGaze,
-    Lerp,
-    Teleport,
 }

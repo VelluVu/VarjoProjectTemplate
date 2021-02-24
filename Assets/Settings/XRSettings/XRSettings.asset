@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: XRSettings
   m_EditorClassIdentifier: 
   movementType: 3
-  controllersInUse: 1
-  hand: 1
+  controllersInUse: 0
+  currentHand: 1
+  preferredHand: 1

@@ -8,12 +8,14 @@ public class SettingSO : ScriptableObject
 {
     public MovementType movementType;
     public bool controllersInUse;
-    public PreferredHand hand;
+    public PreferredHand currentHand;
+    public PreferredHand preferredHand;
 
     public delegate void SettingSODelegate(SettingSO settings);
     public event SettingSODelegate onChange;
 
-    public void Init() {       
+    public void Init() {  
+        currentHand = preferredHand;     
         onChange?.Invoke(this);
     }
 

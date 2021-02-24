@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class XRPOIGazeMovement : IXRMovement
@@ -11,6 +9,8 @@ public class XRPOIGazeMovement : IXRMovement
     public static event GazePOIMoveDelegate onAbleToMove;
     public static event GazePOIMoveDelegate onUnableToMove;
 
+    Transform currentTarget = null;
+
     public void StartState(XRMovementSwitch control)
     {
         this.control = control;
@@ -18,6 +18,7 @@ public class XRPOIGazeMovement : IXRMovement
     }
     public void ExitState()
     {
+        onUnableToMove?.Invoke(currentTarget);
         Debug.Log("Exited MovementType " + this);
     }
    
@@ -35,7 +36,7 @@ public class XRPOIGazeMovement : IXRMovement
         if(hits)
         {
             bool closeToTarget = Vector3.Distance(control.rig.hmd.position, hit.transform.position) < 0.5f;
-            
+            currentTarget = hit.transform;
             if(!closeToTarget)
             {
                 if(!canMove)
@@ -43,11 +44,19 @@ public class XRPOIGazeMovement : IXRMovement
                     canMove = true;
                     onAbleToMove?.Invoke(hit.transform);
                 }
-                if(control.rig.input.onPrimaryButtonPress)
+                if(control.usingControllers)
                 {
-                    Vector3 moveDir = (hit.transform.position - control.rig.hmd.position).normalized;
-                    moveDir = new Vector3(moveDir.x, control.rig.transform.forward.y,moveDir.z);
-                    control.rig.transform.position += moveDir * control.movementVariables.moveSpeed * Time.deltaTime;
+                    if(control.rig.input.GetPrimaryButtonControlPress(control.preferredHand))
+                    {
+                        MoveTowardsPoint(hit.transform);
+                    }
+                }
+                else
+                {
+                    if(control.rig.input.hmdPrimaryButtonPress)
+                    {
+                        MoveTowardsPoint(hit.transform);
+                    }
                 }
             }
             else
@@ -67,5 +76,12 @@ public class XRPOIGazeMovement : IXRMovement
                 onUnableToMove?.Invoke(hit.transform);
             }
         }
+    }
+
+    void MoveTowardsPoint(Transform target)
+    {
+        Vector3 moveDir = (target.position - control.rig.hmd.position).normalized;
+        moveDir = new Vector3(moveDir.x, control.rig.transform.forward.y,moveDir.z);
+        control.rig.transform.position += moveDir * control.movementVariables.moveSpeed * Time.deltaTime;
     }
 }

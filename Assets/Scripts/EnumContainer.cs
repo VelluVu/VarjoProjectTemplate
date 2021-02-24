@@ -1,9 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public enum PreferredHand
 {
     Left,
     Right,
+}
+
+public enum MovementType
+{
+    Gaze,
+    POIGaze,
+    Lerp,
+    Teleport,
 }

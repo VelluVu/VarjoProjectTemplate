@@ -4,15 +4,16 @@ using UnityEngine.XR;
 
 public class XRInputManager : MonoBehaviour
 {
-    [HideInInspector]public PrimaryButtonWatcher watcher;
     InputDevice hmd;
     InputDevice rightController;
     InputDevice leftController;
 
-    public bool onPrimaryButtonPress = false;
-    private bool previousHMDPrimaryButtonPress = false;
-    private bool previousLeftControllerPrimaryButtonPress = false;
-    private bool previousRightControllerPrimaryButtonPress = false;
+    public bool hmdPrimaryButtonPress = false;
+    public bool leftControllerPrimaryButtonPress = false;
+    public bool rightControllerPrimaryButtonPress = false;
+    public bool previousHMDPrimaryButtonPress = false;
+    public bool previousLeftControllerPrimaryButtonPress = false;
+    public bool previousRightControllerPrimaryButtonPress = false;
 
     public delegate void PrimaryButtonDelegate();
     public static event PrimaryButtonDelegate onHMDPrimaryButtonDown;
@@ -22,33 +23,19 @@ public class XRInputManager : MonoBehaviour
     public static event PrimaryButtonDelegate onRightControllerPrimaryButtonDown;
     public static event PrimaryButtonDelegate onRightControllerPrimaryButtonUp;
 
-    private void Awake() {
-        watcher = GetComponent<PrimaryButtonWatcher>();
-    }
-
-    private void Start() {
-        watcher.primaryButtonPress.AddListener(onPrimaryButtonEvent);
-    }
-
     private void OnEnable() 
     {
-        XRCustomRig.headMountedDeviceIsPresent += InitHMD;
-        XRCustomRig.leftControllerIsPresent += InitLeftController;
-        XRCustomRig.rightControllerIsPresent += InitRightController;
-
+        XRCustomRig.onHeadMountedDeviceIsPresent += InitHMD;
+        XRCustomRig.onLeftControllerIsPresent += InitLeftController;
+        XRCustomRig.onRightControllerIsPresent += InitRightController;
     }
 
     private void OnDisable() 
     {
-        XRCustomRig.headMountedDeviceIsPresent -= InitHMD;
-        XRCustomRig.leftControllerIsPresent -= InitLeftController;
-        XRCustomRig.rightControllerIsPresent -= InitRightController;
+        XRCustomRig.onHeadMountedDeviceIsPresent -= InitHMD;
+        XRCustomRig.onLeftControllerIsPresent -= InitLeftController;
+        XRCustomRig.onRightControllerIsPresent -= InitRightController;
        
-    }
-
-    public void onPrimaryButtonEvent(bool pressed) 
-    {    
-        onPrimaryButtonPress = pressed;
     }
 
     private void InitRightController(InputDevice controller)
@@ -66,17 +53,37 @@ public class XRInputManager : MonoBehaviour
         hmd = controller;
     }
 
-    private void Update() 
+    public bool GetPrimaryButtonControlPress(PreferredHand hand)
     {
-        if(hmd != null)
+        if(hand == PreferredHand.Left)
+        {
+            return leftControllerPrimaryButtonPress;
+        }
+        if(hand == PreferredHand.Right) 
+        {
+            return rightControllerPrimaryButtonPress;
+        }
+
+        return false;
+    }
+
+    private void Update()
+    {
+        CheckPrimaryButtonInput();
+    }
+
+    private void CheckPrimaryButtonInput()
+    {
+        if (hmd != null)
         {
             bool hmdPrimaryPressed;
             hmd.TryGetFeatureValue(CommonUsages.primaryButton, out hmdPrimaryPressed);
-            if(previousHMDPrimaryButtonPress != hmdPrimaryPressed)
+            hmdPrimaryButtonPress = hmdPrimaryPressed;
+            if (previousHMDPrimaryButtonPress != hmdPrimaryPressed)
             {
                 previousHMDPrimaryButtonPress = hmdPrimaryPressed;
-                
-                if(hmdPrimaryPressed)
+
+                if (hmdPrimaryPressed)
                 {
                     onHMDPrimaryButtonDown?.Invoke();
                 }
@@ -84,20 +91,19 @@ public class XRInputManager : MonoBehaviour
                 {
                     onHMDPrimaryButtonUp?.Invoke();
                 }
-        
-                //Debug.Log("hmdPrimaryPressed " + hmdPrimaryPressed);
             }
         }
 
-        if(leftController != null)
+        if (leftController != null)
         {
             bool leftControllerPrimaryPressed;
             leftController.TryGetFeatureValue(CommonUsages.primaryButton, out leftControllerPrimaryPressed);
-            if(previousLeftControllerPrimaryButtonPress != leftControllerPrimaryPressed)
-            {  
+            leftControllerPrimaryButtonPress = leftControllerPrimaryPressed;
+            if (previousLeftControllerPrimaryButtonPress != leftControllerPrimaryPressed)
+            {
                 previousLeftControllerPrimaryButtonPress = leftControllerPrimaryPressed;
-            
-                if(leftControllerPrimaryPressed)
+
+                if (leftControllerPrimaryPressed)
                 {
                     onLeftControllerPrimaryButtonDown?.Invoke();
                 }
@@ -105,20 +111,19 @@ public class XRInputManager : MonoBehaviour
                 {
                     onLeftControllerPrimaryButtonUp?.Invoke();
                 }
-            
-                //Debug.Log("leftControllerPrimaryPressed " + leftControllerPrimaryPressed);
             }
         }
 
-        if(rightController != null)
+        if (rightController != null)
         {
             bool rightControllerPrimaryPressed;
             rightController.TryGetFeatureValue(CommonUsages.primaryButton, out rightControllerPrimaryPressed);
-            if(previousRightControllerPrimaryButtonPress != rightControllerPrimaryPressed)
+            rightControllerPrimaryButtonPress = rightControllerPrimaryPressed;
+            if (previousRightControllerPrimaryButtonPress != rightControllerPrimaryPressed)
             {
                 previousRightControllerPrimaryButtonPress = rightControllerPrimaryPressed;
-               
-                if(rightControllerPrimaryPressed)
+
+                if (rightControllerPrimaryPressed)
                 {
                     onRightControllerPrimaryButtonDown?.Invoke();
                 }
@@ -126,11 +131,7 @@ public class XRInputManager : MonoBehaviour
                 {
                     onRightControllerPrimaryButtonUp?.Invoke();
                 }
-                
-                //Debug.Log("rightControllerPrimaryPressed" + rightControllerPrimaryPressed);
             }
         }
     }
-
-
 }

@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 
 /// <summary>
 /// This class is singleton of settings and holds the scriptable object of settings and functions to change the settings.
@@ -18,9 +20,73 @@ public class XRSettings : Singleton<XRSettings>
 
     private void OnEnable() {
         settings.onChange += ChangedSettingsDirectly;
+        XRCustomRig.onControllersNotPresent += ControllersDisconnected;
+        XRCustomRig.onControllersArePresent += ControllersConnected;
+        XRCustomRig.onLeftControllerIsPresent += LCConnected;
+        XRCustomRig.onRightControllerIsPresent += RCConnected;
+        XRCustomRig.onLeftControllerDisconnected += LCDisconnected;
+        XRCustomRig.onRightControllerDisconnected += RCDisconnected;
     }
+
     private void OnDisable() {
         settings.onChange -= ChangedSettingsDirectly;
+        XRCustomRig.onControllersNotPresent -= ControllersDisconnected;
+        XRCustomRig.onControllersArePresent -= ControllersConnected;
+        XRCustomRig.onLeftControllerIsPresent -= LCConnected;
+        XRCustomRig.onRightControllerIsPresent -= RCConnected;
+        XRCustomRig.onLeftControllerDisconnected -= LCDisconnected;
+        XRCustomRig.onRightControllerDisconnected -= RCDisconnected;
+        settings.currentHand = settings.preferredHand;
+    }
+
+    private void RCDisconnected()
+    {
+        if(settings.preferredHand == PreferredHand.Right && settings.currentHand != PreferredHand.Left)
+        {
+            settings.currentHand = PreferredHand.Left;
+            ChangedSettingsDirectly(settings);
+        }
+    }
+
+    private void LCDisconnected()
+    {
+        
+        if(settings.preferredHand == PreferredHand.Left && settings.currentHand != PreferredHand.Right)
+        {
+            settings.currentHand = PreferredHand.Right;
+            ChangedSettingsDirectly(settings);
+        }
+        
+    }
+
+    private void RCConnected(InputDevice controller)
+    {
+        if(settings.preferredHand == PreferredHand.Right && settings.currentHand != PreferredHand.Right)
+        {
+            settings.currentHand = PreferredHand.Right;
+            ChangedSettingsDirectly(settings);
+        }
+    }
+
+    private void LCConnected(InputDevice controller)
+    {
+        if(settings.preferredHand == PreferredHand.Left && settings.currentHand != PreferredHand.Left)
+        {
+            settings.currentHand = PreferredHand.Left;
+            ChangedSettingsDirectly(settings);
+        }
+    }
+
+    private void ControllersConnected(List<InputDevice> controllers)
+    {
+        settings.controllersInUse = true;
+        ChangedSettingsDirectly(settings);
+    }
+
+    private void ControllersDisconnected(List<InputDevice> controllers)
+    {
+        settings.controllersInUse = false;
+        ChangedSettingsDirectly(settings);
     }
 
     public void ChangedSettingsDirectly(SettingSO newSettings)
@@ -39,10 +105,11 @@ public class XRSettings : Singleton<XRSettings>
 
     public void ChangePreferredHand(PreferredHand newHand)
     {
-        if(settings.hand != newHand)
+        if(settings.currentHand != newHand)
         {        
-            settings.hand = newHand;
+            settings.currentHand = newHand;
             onSettingChange?.Invoke(settings);
         }
     }
+
 }

@@ -313,6 +313,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5268797944507750722}
   - component: {fileID: 5268797944507750723}
+  - component: {fileID: 4666538377638062198}
   m_Layer: 13
   m_Name: LeftController
   m_TagString: Untagged
@@ -353,6 +354,18 @@ MonoBehaviour:
   m_TrackingType: 0
   m_UpdateType: 0
   m_UseRelativeTransform: 0
+--- !u!114 &4666538377638062198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5268797944507750725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73996995376790e42b99b20780fbd868, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5268797944623397209
 GameObject:
   m_ObjectHideFlags: 0
@@ -410,7 +423,6 @@ GameObject:
   - component: {fileID: 5268797944896252774}
   - component: {fileID: 5268797944896252772}
   - component: {fileID: 5268797944896252773}
-  - component: {fileID: 5268797944896252770}
   - component: {fileID: 5268797944896252771}
   - component: {fileID: 5268797944896252768}
   m_Layer: 13
@@ -451,15 +463,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hmd: {fileID: 5268797944085287264}
-  leftController: {fileID: 5268797944507750722}
-  rightController: {fileID: 5268797945411257565}
+  leftController: {fileID: 4666538377638062198}
+  rightController: {fileID: 400937429592555781}
   body: {fileID: 5268797944623397206}
   input: {fileID: 0}
   cooldownSystem: {fileID: 0}
-  IsPresent: 0
-  HasControllers: 0
-  HasLeftController: 0
-  HasRightController: 0
+  isPresent: 0
+  hasControllers: 0
+  hasLeftController: 0
+  hasRightController: 0
 --- !u!114 &5268797944896252772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -493,21 +505,6 @@ MonoBehaviour:
   uiActivateMask:
     serializedVersion: 2
     m_Bits: 4096
---- !u!114 &5268797944896252770
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5268797944896252777}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7236338960e2f0e4980c49f8656b1f74, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  primaryButtonPress:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &5268797944896252771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -520,8 +517,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd5e8e830850e4548a244f9ea07732b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  watcher: {fileID: 0}
-  onPrimaryButtonPress: 0
+  hmdPrimaryButtonPress: 0
+  leftControllerPrimaryButtonPress: 0
+  rightControllerPrimaryButtonPress: 0
+  previousHMDPrimaryButtonPress: 0
+  previousLeftControllerPrimaryButtonPress: 0
+  previousRightControllerPrimaryButtonPress: 0
 --- !u!114 &5268797944896252768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -534,8 +535,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78d0e9c367f76624d84adc8d838713c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 0
-  cooldownDuration: 1
   waypointToMove: 0
 --- !u!1 &5268797945411257564
 GameObject:
@@ -547,6 +546,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5268797945411257565}
   - component: {fileID: 5268797945411257562}
+  - component: {fileID: 400937429592555781}
   m_Layer: 13
   m_Name: RightController
   m_TagString: Untagged
@@ -587,6 +587,18 @@ MonoBehaviour:
   m_TrackingType: 0
   m_UpdateType: 0
   m_UseRelativeTransform: 0
+--- !u!114 &400937429592555781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5268797945411257564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73996995376790e42b99b20780fbd868, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5268797945588997520
 GameObject:
   m_ObjectHideFlags: 0
