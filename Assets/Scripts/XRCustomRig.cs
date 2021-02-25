@@ -60,10 +60,10 @@ public class XRCustomRig : MonoBehaviour
 
     void DeviceDisconnected(InputDevice device)
     {
-        Debug.Log(device.characteristics + " Disconnected!");
+        //Debug.Log(device.characteristics + " Disconnected!");
         if(device.characteristics.HasFlag(InputDeviceCharacteristics.Controller))
         {
-            CheckControllers();
+            RemoveController(device);
         }
         if(device.characteristics.HasFlag(InputDeviceCharacteristics.Left))
         {
@@ -84,11 +84,11 @@ public class XRCustomRig : MonoBehaviour
 
     void DeviceConnected(InputDevice device)
     {
-        Debug.Log(device.characteristics + " Connected!");
+        //Debug.Log(device.characteristics + " Connected!");
 
         if(device.characteristics.HasFlag(InputDeviceCharacteristics.Controller))
         {
-            CheckControllers();
+            AddController(device);
         }
         if(device.characteristics.HasFlag(InputDeviceCharacteristics.Left))
         {
@@ -153,12 +153,14 @@ public class XRCustomRig : MonoBehaviour
         Collider col = body.GetComponent<Collider>();
 
         if(col != null)
+        {
             if(col is CapsuleCollider)
             {            
                 CapsuleCollider thecol = (CapsuleCollider)col;
                 thecol.height = distanceFromHeadToGround;
                 thecol.center = new Vector3(thecol.center.x, distanceFromHeadToGround/2, thecol.center.z);        
             }
+        }
     }
 
     /// <summary>
@@ -174,9 +176,9 @@ public class XRCustomRig : MonoBehaviour
         bool canHaptic = device.TryGetHapticCapabilities(out capabilities);
         if(canHaptic)
         {
-            Debug.Log("HapticData for "+ device.name);
             if(capabilities.supportsBuffer)
             {
+                Debug.Log("Device is Supporting the Haptic Buffering, printing the haptic capabilities:");
                 Debug.Log("haptic buffer frequency: " + capabilities.bufferFrequencyHz);
                 Debug.Log("haptic buffer max size: " + capabilities.bufferMaxSize);
                 Debug.Log("haptic buffer optimal size: " + capabilities.bufferOptimalSize);
@@ -188,19 +190,36 @@ public class XRCustomRig : MonoBehaviour
         }
     }
 
-    public void CheckControllers()
+    void AddController(InputDevice device)
     {
-        InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Controller, controllers);
-    
-        if(controllers.Count == 0 && hasControllers)
+        if(!controllers.Contains(device))
         {
-            hasControllers = false;
-            onControllersNotPresent?.Invoke(controllers);
+            controllers.Add(device);
+            if(controllers.Count == 2)
+            {
+                onControllersArePresent?.Invoke(controllers);
+                //Debug.Log(controllers[0].characteristics);
+                //Debug.Log(controllers[1].characteristics);
+                Debug.Log("Both Controllers are present!");
+            }
         }
+    }
+
+    void RemoveController(InputDevice device)
+    {
         if(controllers.Count > 0)
         {
-            onControllersArePresent?.Invoke(controllers);
-            hasControllers = true;
+            if(controllers.Contains(device))
+            {
+                controllers.Remove(device);
+                controllers.TrimExcess();
+            }
+        }
+
+        if(controllers.Count == 0)
+        {
+            onControllersNotPresent?.Invoke(controllers);
+            Debug.Log("Both Controllers are disconnected!");
         }
     }
 

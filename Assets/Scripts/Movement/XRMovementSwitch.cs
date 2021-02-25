@@ -20,8 +20,6 @@ public class XRMovementSwitch : MonoBehaviour
     XRLerpMovement xRLerpMovement;
     XRTeleportMovement xRTeleportMovement;
 
-    bool ready = false;
-
     private void Awake() {
         rig = GetComponent<XRCustomRig>();
         InitMovementStyles();
@@ -69,22 +67,36 @@ public class XRMovementSwitch : MonoBehaviour
 
     private void Update() 
     {
-        if(ready)
-        {  
-            currentXRMovement.UpdateState();
-        }
+        currentXRMovement.UpdateState();
     }
 
     public void CheckMovementType(SettingSO newSettings)
-    {    
-        if(currentXRMovement != null)
-            currentXRMovement.ExitState();
-
-        ready = false;
-        preferredHand = newSettings.currentHand;
-        usingControllers = newSettings.controllersInUse;
+    {
+        if(preferredHand != newSettings.currentHand)
+            preferredHand = newSettings.currentHand;
+        if(usingControllers != newSettings.controllersInUse)
+            usingControllers = newSettings.controllersInUse;
         
-        switch (newSettings.movementType)
+        if(currentMovementType == newSettings.movementType && currentXRMovement != null)
+        {   
+            return;
+        }
+
+        if(currentXRMovement != null && currentMovementType != newSettings.movementType)
+        {
+            currentXRMovement.ExitState();
+        }
+
+        SetCurrentXRMovementType(newSettings.movementType);
+
+        currentMovementType = newSettings.movementType;
+
+        currentXRMovement.StartState(this);
+    }
+
+    void SetCurrentXRMovementType(MovementType newMovementType)
+    {
+        switch (newMovementType)
         {
             case MovementType.Gaze:
                 currentXRMovement = xRGazeMovement;
@@ -101,10 +113,6 @@ public class XRMovementSwitch : MonoBehaviour
             default:
                 break;
         }
-        currentMovementType = newSettings.movementType;
-
-        ready = true;
-        currentXRMovement.StartState(this);
     }
 
     public MovementType GetCurrentMovementType()

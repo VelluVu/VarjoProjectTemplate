@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -79,14 +79,20 @@ public class XRSettings : Singleton<XRSettings>
 
     private void ControllersConnected(List<InputDevice> controllers)
     {
-        settings.controllersInUse = true;
-        ChangedSettingsDirectly(settings);
+        if(!settings.controllersInUse)
+        {
+            settings.controllersInUse = true;
+            ChangedSettingsDirectly(settings);
+        }
     }
 
     private void ControllersDisconnected(List<InputDevice> controllers)
     {
-        settings.controllersInUse = false;
-        ChangedSettingsDirectly(settings);
+        if(settings.controllersInUse)
+        {
+            settings.controllersInUse = false;
+            ChangedSettingsDirectly(settings);
+        }
     }
 
     public void ChangedSettingsDirectly(SettingSO newSettings)

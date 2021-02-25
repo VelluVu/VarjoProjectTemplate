@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 272727ead0ecf554b943285610258e2f, type: 3}
   m_Name: XRSettings
   m_EditorClassIdentifier: 
-  movementType: 3
+  movementType: 0
   controllersInUse: 0
   currentHand: 1
   preferredHand: 1

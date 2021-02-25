@@ -11,31 +11,65 @@ public class XRCustomController : MonoBehaviour
     public InputDeviceCharacteristics hand;
     InputDevice controller;
 
+    private void Awake() {
+        if(hand == InputDeviceCharacteristics.None)
+            CheckHand();
+    }
+
+    /// <summary>
+    /// If forgot to set InputDeviceCharacteristics inside the editor, 
+    /// this function autosets the variable by the child index.
+    /// 0 == LeftController
+    /// 1 == RightController
+    /// </summary>
+    void CheckHand()
+    {
+        if(transform.parent.GetChild(0) == transform)
+        {
+            hand = InputDeviceCharacteristics.Left;
+        }
+        if(transform.parent.GetChild(1) == transform)
+        {
+            hand = InputDeviceCharacteristics.Right;
+        }
+    }
+
     private void OnEnable() 
     {
-        XRCustomRig.onControllersArePresent += ConnectedControllers;
-        XRCustomRig.onControllersNotPresent += DisconnectedControllers;
+        InputDevices.deviceConnected += CheckConnectedDevice;   
+        InputDevices.deviceDisconnected += CheckDisconnectedDevice;
     }
 
     private void OnDisable() 
     {
-        XRCustomRig.onControllersArePresent -= ConnectedControllers;
-        XRCustomRig.onControllersNotPresent -= DisconnectedControllers;
+        InputDevices.deviceConnected -= CheckConnectedDevice;  
+        InputDevices.deviceDisconnected -= CheckDisconnectedDevice;
     }
 
-    void ConnectedControllers(List<InputDevice> controllers)
+    void CheckConnectedDevice(InputDevice device)
     {
-        for (var i = 0; i < controllers.Count; i++)
+        
+        if(device.characteristics.HasFlag(hand))
         {
-            if(controllers[i].characteristics.HasFlag(hand))
-            {
-                
-            }
+            Debug.Log(transform.name + " detected!");
+            InstantiateModel();
+        }
+        
+    }
+
+    void CheckDisconnectedDevice(InputDevice device)
+    {
+        if(device.characteristics.HasFlag(hand))
+        {
+            Debug.Log(transform.name + " disconnected!");
         }
     }
 
-    void DisconnectedControllers(List<InputDevice> controllers)
+    void InstantiateModel()
     {
-
+        if(model == null)
+        {
+            model = Instantiate(modelPrefab, transform.position, transform.rotation, transform);
+        }
     }
 }
