@@ -118,4 +118,13 @@ public class XRSettings : Singleton<XRSettings>
         }
     }
 
+    public void ChangeSnapTurning(bool newState)
+    {
+        if(settings.snapTurningOn != newState)
+        {
+            settings.snapTurningOn = newState;
+            onSettingChange?.Invoke(settings);
+        }
+    }
+
 }

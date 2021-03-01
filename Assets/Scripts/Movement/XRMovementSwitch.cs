@@ -13,6 +13,9 @@ public class XRMovementSwitch : MonoBehaviour
     [HideInInspector]public XRCustomRig rig;
     [HideInInspector]public PreferredHand preferredHand;
     [HideInInspector]public bool usingControllers;
+    public bool moving = false;
+    public delegate void MovementDelegate(bool moving);
+    public static event MovementDelegate onMove;
     MovementType currentMovementType;
     IXRMovement currentXRMovement;
     XRGazeMovement xRGazeMovement;
@@ -68,6 +71,11 @@ public class XRMovementSwitch : MonoBehaviour
     private void Update() 
     {
         currentXRMovement.UpdateState();
+    }
+
+    public void MoveLock(bool canMove)
+    {
+        onMove?.Invoke(canMove);
     }
 
     public void CheckMovementType(SettingSO newSettings)

@@ -7,6 +7,7 @@ public class XRCustomController : MonoBehaviour
 {
     public GameObject modelPrefab;
     GameObject model;
+    public bool usingModel;
 
     public InputDeviceCharacteristics hand;
     InputDevice controller;
@@ -52,7 +53,8 @@ public class XRCustomController : MonoBehaviour
         if(device.characteristics.HasFlag(hand))
         {
             Debug.Log(transform.name + " detected!");
-            InstantiateModel();
+            if(usingModel)
+                InstantiateModel();
         }
         
     }
@@ -70,6 +72,7 @@ public class XRCustomController : MonoBehaviour
         if(model == null)
         {
             model = Instantiate(modelPrefab, transform.position, transform.rotation, transform);
+            model.gameObject.name = hand.ToString() + " Controller Model";
         }
     }
 }

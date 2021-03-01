@@ -76,7 +76,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 1000
-  field of view: 60
+  field of view: 100
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -273,6 +273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modelPrefab: {fileID: 5946868920428915879, guid: 3db91e62aae9f9b4d9d7e69155211f28, type: 3}
+  usingModel: 1
   hand: 256
 --- !u!120 &1734001095
 LineRenderer:
@@ -529,6 +530,7 @@ MonoBehaviour:
   rig: {fileID: 0}
   preferredHand: 0
   usingControllers: 0
+  moving: 0
 --- !u!114 &5268797944896252773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -653,6 +655,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modelPrefab: {fileID: 5946868920428915879, guid: 3db91e62aae9f9b4d9d7e69155211f28, type: 3}
+  usingModel: 1
   hand: 512
 --- !u!120 &232719671
 LineRenderer:

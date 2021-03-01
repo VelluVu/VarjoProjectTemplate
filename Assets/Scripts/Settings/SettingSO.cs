@@ -8,6 +8,7 @@ public class SettingSO : ScriptableObject
 {
     public MovementType movementType;
     public bool controllersInUse;
+    public bool snapTurningOn;
     public PreferredHand currentHand;
     public PreferredHand preferredHand;
 

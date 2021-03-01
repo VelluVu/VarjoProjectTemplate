@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementType: 0
   controllersInUse: 0
+  snapTurningOn: 1
   currentHand: 1
   preferredHand: 1
