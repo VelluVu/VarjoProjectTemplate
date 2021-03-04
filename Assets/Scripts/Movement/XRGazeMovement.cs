@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 /// <summary>
 /// This class does the Gaze movement.
@@ -45,6 +45,7 @@ public class XRGazeMovement : IXRMovement
             {
                 canMove = true;
                 onCorrectMoveAngle?.Invoke(control.rig.hmd);
+                control.MoveLock(canMove); 
             }
             if(control.usingControllers)
             {
@@ -67,6 +68,7 @@ public class XRGazeMovement : IXRMovement
             {
                 canMove = false;
                 onNonCorrectMoveAngle?.Invoke(control.rig.hmd);
+                control.MoveLock(canMove);
             }
         }
     }

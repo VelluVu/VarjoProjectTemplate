@@ -1,4 +1,3 @@
-﻿
 /// <summary>
 /// Interface to split the different movement styles into own scripts.
 /// </summary>

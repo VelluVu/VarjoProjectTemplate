@@ -16,4 +16,5 @@ MonoBehaviour:
   controllersInUse: 0
   snapTurningOn: 1
   currentHand: 1
+  previousHand: 1
   preferredHand: 1

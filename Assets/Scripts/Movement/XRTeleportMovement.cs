@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using System;
+using UnityEngine;
 using UnityEngine.XR;
 
 /// <summary>
@@ -18,20 +19,33 @@ public class XRTeleportMovement : IXRMovement
     {
         this.control = control;
 
-        XRInputManager.onHMDPrimaryButtonDown += OnHMDButtonDown;
-        XRInputManager.onLeftControllerPrimaryButtonDown += OnLeftControllerButtonDown;
-        XRInputManager.onRightControllerPrimaryButtonDown += OnRightControllerButtonDown;
-
+        XRInputManager.onPrimaryButtonDown += OnButtonDown;
+        
         Debug.Log("Chosen MovementType " + this);
     }
 
     public void ExitState()
     {
-        XRInputManager.onHMDPrimaryButtonDown -= OnHMDButtonDown;
-        XRInputManager.onLeftControllerPrimaryButtonDown -= OnLeftControllerButtonDown;
-        XRInputManager.onRightControllerPrimaryButtonDown -= OnRightControllerButtonDown;
+        XRInputManager.onPrimaryButtonDown -= OnButtonDown;
+    
         onTeleportNotPossible?.Invoke(hit);
         Debug.Log("Exited MovementType " + this);
+    }
+
+    private void OnButtonDown(InputDeviceCharacteristics deviceCharacteristics)
+    {
+        if(deviceCharacteristics == InputDeviceCharacteristics.HeadMounted)
+        {
+            OnHMDButtonDown();
+        }
+        else if(deviceCharacteristics == InputDeviceCharacteristics.Left)
+        {
+            OnLeftControllerButtonDown();
+        }
+        else if(deviceCharacteristics == InputDeviceCharacteristics.Right)
+        {
+            OnRightControllerButtonDown();
+        }
     }
 
     private void OnHMDButtonDown()
@@ -80,7 +94,8 @@ public class XRTeleportMovement : IXRMovement
                 onTeleportPossible?.Invoke(hit);
                 if(!canTele)
                 {
-                    canTele = true;           
+                    canTele = true;
+                    control.MoveLock(canTele);       
                 }       
             }
             else
@@ -98,15 +113,14 @@ public class XRTeleportMovement : IXRMovement
             {
                 canTele = false;
                 onTeleportNotPossible?.Invoke(hit);
+                control.MoveLock(canTele); 
             }
         }
     }
 
     void WithHMD()
     {
-        //TODO : Make teleport movement that works with headset button.
-
-        
+        //TODO : Make teleport movement that works with headset button
         bool hits = Physics.Raycast(control.rig.hmd.position, control.rig.hmd.forward, out hit, control.movementVariables.raycastDistance, control.movementVariables.raycastLayerMask);
 
         if(hits)

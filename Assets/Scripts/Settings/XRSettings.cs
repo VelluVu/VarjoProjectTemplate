@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
@@ -19,7 +17,7 @@ public class XRSettings : Singleton<XRSettings>
     }
 
     private void OnEnable() {
-        settings.onChange += ChangedSettingsDirectly;
+        settings.onChange += OnChangeSettings;
         XRCustomRig.onControllersNotPresent += ControllersDisconnected;
         XRCustomRig.onControllersArePresent += ControllersConnected;
         XRCustomRig.onLeftControllerIsPresent += LCConnected;
@@ -29,7 +27,7 @@ public class XRSettings : Singleton<XRSettings>
     }
 
     private void OnDisable() {
-        settings.onChange -= ChangedSettingsDirectly;
+        settings.onChange -= OnChangeSettings;
         XRCustomRig.onControllersNotPresent -= ControllersDisconnected;
         XRCustomRig.onControllersArePresent -= ControllersConnected;
         XRCustomRig.onLeftControllerIsPresent -= LCConnected;
@@ -43,8 +41,9 @@ public class XRSettings : Singleton<XRSettings>
     {
         if(settings.preferredHand == PreferredHand.Right && settings.currentHand != PreferredHand.Left)
         {
+            settings.previousHand = settings.currentHand;
             settings.currentHand = PreferredHand.Left;
-            ChangedSettingsDirectly(settings);
+            OnChangeSettings(settings);
         }
     }
 
@@ -53,8 +52,9 @@ public class XRSettings : Singleton<XRSettings>
         
         if(settings.preferredHand == PreferredHand.Left && settings.currentHand != PreferredHand.Right)
         {
+            settings.previousHand = settings.currentHand;
             settings.currentHand = PreferredHand.Right;
-            ChangedSettingsDirectly(settings);
+            OnChangeSettings(settings);
         }
         
     }
@@ -63,8 +63,9 @@ public class XRSettings : Singleton<XRSettings>
     {
         if(settings.preferredHand == PreferredHand.Right && settings.currentHand != PreferredHand.Right)
         {
+            settings.previousHand = settings.currentHand;
             settings.currentHand = PreferredHand.Right;
-            ChangedSettingsDirectly(settings);
+            OnChangeSettings(settings);
         }
     }
 
@@ -72,17 +73,18 @@ public class XRSettings : Singleton<XRSettings>
     {
         if(settings.preferredHand == PreferredHand.Left && settings.currentHand != PreferredHand.Left)
         {
+            settings.previousHand = settings.currentHand;
             settings.currentHand = PreferredHand.Left;
-            ChangedSettingsDirectly(settings);
+            OnChangeSettings(settings);
         }
     }
 
     private void ControllersConnected(List<InputDevice> controllers)
     {
         if(!settings.controllersInUse)
-        {
+        {    
             settings.controllersInUse = true;
-            ChangedSettingsDirectly(settings);
+            OnChangeSettings(settings);
         }
     }
 
@@ -90,14 +92,16 @@ public class XRSettings : Singleton<XRSettings>
     {
         if(settings.controllersInUse)
         {
+            settings.previousHand = settings.currentHand;
+            settings.currentHand = PreferredHand.Hmd;
             settings.controllersInUse = false;
-            ChangedSettingsDirectly(settings);
+            OnChangeSettings(settings);
         }
     }
 
-    public void ChangedSettingsDirectly(SettingSO newSettings)
+    public void OnChangeSettings(SettingSO settings)
     {
-        onSettingChange?.Invoke(newSettings);
+        onSettingChange?.Invoke(settings);
     }
 
     public void ChangeMovementType(MovementType newMovementType)
@@ -105,7 +109,7 @@ public class XRSettings : Singleton<XRSettings>
         if(settings.movementType != newMovementType)
         {        
             settings.movementType = newMovementType;
-            onSettingChange?.Invoke(settings);
+            OnChangeSettings(settings);
         }
     }
 
@@ -113,8 +117,9 @@ public class XRSettings : Singleton<XRSettings>
     {
         if(settings.currentHand != newHand)
         {        
+            settings.previousHand = settings.currentHand;
             settings.currentHand = newHand;
-            onSettingChange?.Invoke(settings);
+            OnChangeSettings(settings);
         }
     }
 
@@ -123,7 +128,7 @@ public class XRSettings : Singleton<XRSettings>
         if(settings.snapTurningOn != newState)
         {
             settings.snapTurningOn = newState;
-            onSettingChange?.Invoke(settings);
+            OnChangeSettings(settings);
         }
     }
 

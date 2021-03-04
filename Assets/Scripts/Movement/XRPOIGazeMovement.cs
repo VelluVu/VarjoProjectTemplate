@@ -43,6 +43,7 @@ public class XRPOIGazeMovement : IXRMovement
                 {
                     canMove = true;
                     onAbleToMove?.Invoke(hit.transform);
+                    control.MoveLock(canMove);
                 }
                 if(control.usingControllers)
                 {
@@ -65,6 +66,7 @@ public class XRPOIGazeMovement : IXRMovement
                 {
                     canMove = false;
                     onUnableToMove?.Invoke(hit.transform);
+                    control.MoveLock(canMove);
                 }
             }
         }

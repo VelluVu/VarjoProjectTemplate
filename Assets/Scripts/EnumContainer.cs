@@ -2,6 +2,7 @@ public enum PreferredHand
 {
     Left,
     Right,
+    Hmd,
 }
 
 public enum MovementType

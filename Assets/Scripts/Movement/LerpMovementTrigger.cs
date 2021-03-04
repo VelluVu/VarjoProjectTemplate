@@ -1,6 +1,3 @@
-
-using UnityEngine;
-
 /// <summary>
 /// This Class triggers the lerp movement.
 /// </summary>

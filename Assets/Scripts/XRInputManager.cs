@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -15,13 +14,9 @@ public class XRInputManager : MonoBehaviour
     public bool previousLeftControllerPrimaryButtonPress = false;
     public bool previousRightControllerPrimaryButtonPress = false;
 
-    public delegate void PrimaryButtonDelegate();
-    public static event PrimaryButtonDelegate onHMDPrimaryButtonDown;
-    public static event PrimaryButtonDelegate onHMDPrimaryButtonUp;
-    public static event PrimaryButtonDelegate onLeftControllerPrimaryButtonDown;
-    public static event PrimaryButtonDelegate onLeftControllerPrimaryButtonUp;
-    public static event PrimaryButtonDelegate onRightControllerPrimaryButtonDown;
-    public static event PrimaryButtonDelegate onRightControllerPrimaryButtonUp;
+    public delegate void PrimaryButtonDelegate(InputDeviceCharacteristics deviceCharacteristics);
+    public static event PrimaryButtonDelegate onPrimaryButtonDown;
+    public static event PrimaryButtonDelegate onPrimaryButtonUp;
 
     private void OnEnable() 
     {
@@ -85,11 +80,11 @@ public class XRInputManager : MonoBehaviour
 
                 if (hmdPrimaryPressed)
                 {
-                    onHMDPrimaryButtonDown?.Invoke();
+                    onPrimaryButtonDown?.Invoke(InputDeviceCharacteristics.HeadMounted);
                 }
                 else
                 {
-                    onHMDPrimaryButtonUp?.Invoke();
+                    onPrimaryButtonUp?.Invoke(InputDeviceCharacteristics.HeadMounted);
                 }
             }
         }
@@ -105,11 +100,11 @@ public class XRInputManager : MonoBehaviour
 
                 if (leftControllerPrimaryPressed)
                 {
-                    onLeftControllerPrimaryButtonDown?.Invoke();
+                    onPrimaryButtonDown?.Invoke(InputDeviceCharacteristics.Left);
                 }
                 else
                 {
-                    onLeftControllerPrimaryButtonUp?.Invoke();
+                    onPrimaryButtonUp?.Invoke(InputDeviceCharacteristics.Left);
                 }
             }
         }
@@ -125,11 +120,11 @@ public class XRInputManager : MonoBehaviour
 
                 if (rightControllerPrimaryPressed)
                 {
-                    onRightControllerPrimaryButtonDown?.Invoke();
+                    onPrimaryButtonDown?.Invoke(InputDeviceCharacteristics.Right);
                 }
                 else
                 {
-                    onRightControllerPrimaryButtonUp?.Invoke();
+                    onPrimaryButtonUp?.Invoke(InputDeviceCharacteristics.Right);
                 }
             }
         }

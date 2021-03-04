@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// This class is working as a statepattern for movementstyles and switching the movementstyle when settings change.
@@ -23,6 +21,8 @@ public class XRMovementSwitch : MonoBehaviour
     XRLerpMovement xRLerpMovement;
     XRTeleportMovement xRTeleportMovement;
 
+    bool ready = false;
+    
     private void Awake() {
         rig = GetComponent<XRCustomRig>();
         InitMovementStyles();
@@ -70,11 +70,12 @@ public class XRMovementSwitch : MonoBehaviour
 
     private void Update() 
     {
-        currentXRMovement.UpdateState();
+        if(ready)
+            currentXRMovement.UpdateState();
     }
 
     public void MoveLock(bool canMove)
-    {
+    { 
         onMove?.Invoke(canMove);
     }
 
@@ -98,8 +99,9 @@ public class XRMovementSwitch : MonoBehaviour
         SetCurrentXRMovementType(newSettings.movementType);
 
         currentMovementType = newSettings.movementType;
-
+        
         currentXRMovement.StartState(this);
+        ready = true;
     }
 
     void SetCurrentXRMovementType(MovementType newMovementType)

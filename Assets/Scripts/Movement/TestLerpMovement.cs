@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 
 /// <summary>
 /// For testing lerp movement from primary button input.
@@ -19,32 +20,17 @@ public class TestLerpMovement : MonoBehaviour
     }
 
     private void OnEnable() {
-        XRInputManager.onHMDPrimaryButtonDown += OnHMDButtonDown;
-        XRInputManager.onLeftControllerPrimaryButtonDown += OnLeftControllerButtonDown;
-        XRInputManager.onRightControllerPrimaryButtonDown += OnRightControllerButtonDown;
+        XRInputManager.onPrimaryButtonDown += OnButtonDown;
     }
 
     private void OnDisable() {
-        XRInputManager.onHMDPrimaryButtonDown -= OnHMDButtonDown;
-        XRInputManager.onLeftControllerPrimaryButtonDown -= OnLeftControllerButtonDown;
-        XRInputManager.onRightControllerPrimaryButtonDown -= OnRightControllerButtonDown;
+        XRInputManager.onPrimaryButtonDown -= OnButtonDown;
+        
     }
   
-    private void OnRightControllerButtonDown()
+    public void OnButtonDown(InputDeviceCharacteristics deviceCharacteristics)
     {
         LerpMovementTrigger.TriggerMovement(waypointToMove);
-    }
-
-    private void OnLeftControllerButtonDown()
-    {
-        LerpMovementTrigger.TriggerMovement(waypointToMove);
-    }
-
-    private void OnHMDButtonDown()
-    {
-                
-        LerpMovementTrigger.TriggerMovement(waypointToMove);       
-        
     }
 
 }

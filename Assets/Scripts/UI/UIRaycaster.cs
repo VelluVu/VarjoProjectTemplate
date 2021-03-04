@@ -2,13 +2,18 @@ using UnityEngine;
 
 public class UIRaycaster : MonoBehaviour
 {
+    
     LineRenderer lineRenderer;
     RaycastHit hit;
+
+    //[SerializeField]CustomVRInputModule inputModule;
     [SerializeField]private float uiRaycastDistance;
     [SerializeField]LayerMask uiRaycastMask;
     [SerializeField]private float shootPointZ;
     Transform rayShootPoint;
     
+    [SerializeField] bool usingControllers;
+    bool hits;
 
     private void Awake() {
         lineRenderer = GetComponent<LineRenderer>();
@@ -18,17 +23,43 @@ public class UIRaycaster : MonoBehaviour
         rayShootPoint.transform.position = new Vector3(transform.position.x, transform.position.y, transform.forward.z * shootPointZ);
     }
 
-    private void Update() {
-       bool hits = Physics.Raycast(transform.position, transform.forward, out hit, uiRaycastDistance, uiRaycastMask);
+    private void OnEnable() {
+        XRSettings.onSettingChange += SettingChange;
+    }
 
-       if(hits)
-       {
-           ShowLine(hit);
-       }
-       else
-       {
-           HideRay();
-       }
+    private void OnDisable() {
+        XRSettings.onSettingChange -= SettingChange;
+        HideRay();
+    }
+
+    public void SettingChange(SettingSO settings)
+    {
+        usingControllers = settings.controllersInUse;
+    }
+
+    private void Update() 
+    {
+        if(!usingControllers)
+        {
+            return;
+        }
+        
+        RayFromController();
+        
+    }
+
+    public void RayFromController()
+    {
+        hits = Physics.Raycast(transform.position, transform.forward, out hit, uiRaycastDistance, uiRaycastMask);
+
+        if(hits)
+        {
+            ShowLine(hit);
+        }
+        else
+        {
+            HideRay();
+        }
     }
 
     private void HideRay()

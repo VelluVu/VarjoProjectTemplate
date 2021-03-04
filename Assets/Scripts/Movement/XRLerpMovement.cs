@@ -1,5 +1,3 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -33,6 +31,7 @@ public class XRLerpMovement : IXRMovement
             control.movementVariables.lerpValue = 0f;
             currentWPIndex = newWpIndex;
             moving = true;
+            control.MoveLock(moving);
         }
     }
     
@@ -48,10 +47,12 @@ public class XRLerpMovement : IXRMovement
         {
             control.movementVariables.lerpValue += Time.deltaTime * control.movementVariables.lerpSpeed;
             control.rig.transform.position = Vector3.Lerp(control.rig.transform.position, control.Wps[currentWPIndex].position, control.movementVariables.lerpValue);
+            
             if(control.movementVariables.lerpValue >= 1.0f)
             {
                 control.movementVariables.lerpValue = 1.0f;
                 moving = false;
+                control.MoveLock(moving);
             }
         }
     }
