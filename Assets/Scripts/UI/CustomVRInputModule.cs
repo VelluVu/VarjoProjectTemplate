@@ -56,7 +56,7 @@ public class CustomVRInputModule : BaseInputModule
         {
             if(settings.currentHand == PreferredHand.Left)
             {
-                Debug.Log("Setting left camera!");
+                //Debug.Log("Setting left camera!");
                 graphicRaycastCameras[2].gameObject.SetActive(false);
                 graphicRaycastCameras[1].gameObject.SetActive(true);
                 graphicRaycastCamera = graphicRaycastCameras[1];
@@ -65,7 +65,7 @@ public class CustomVRInputModule : BaseInputModule
             }
             else if(settings.currentHand == PreferredHand.Right)
             {
-                Debug.Log("Setting right camera!");
+                //Debug.Log("Setting right camera!");
                 graphicRaycastCameras[1].gameObject.SetActive(false);
                 graphicRaycastCameras[2].gameObject.SetActive(true);
                 graphicRaycastCamera = graphicRaycastCameras[2];
@@ -88,7 +88,8 @@ public class CustomVRInputModule : BaseInputModule
 
     public void SetCamera(SetCanvasEventCamera eventCameraSetter)
     {
-        eventCameraSetter.SetWorldCamera(graphicRaycastCamera);
+        if(graphicRaycastCamera != null)
+            eventCameraSetter.SetWorldCamera(graphicRaycastCamera);
     }
 
     public bool IsCorrectInputDevice(InputDeviceCharacteristics theHand)
@@ -113,7 +114,7 @@ public class CustomVRInputModule : BaseInputModule
         pointerEventData.pressPosition = pointerEventData.position;
         pointerEventData.pointerPress = newPointerPress;
         pointerEventData.rawPointerPress = currentObject;
-        Debug.Log("UI Button Down!");
+        //Debug.Log("UI Button Down!");
     }
 
     public void UIButtonUp(InputDeviceCharacteristics deviceCharacteristics)
@@ -135,6 +136,6 @@ public class CustomVRInputModule : BaseInputModule
         pointerEventData.pressPosition = Vector2.zero;
         pointerEventData.pointerPress = null;
         pointerEventData.rawPointerPress = null;
-        Debug.Log("UI Button UP!");
+        //Debug.Log("UI Button UP!");
     }
 }

@@ -11,6 +11,9 @@ public class HidePOIs : MonoBehaviour
         {
             POIs[i] = transform.GetChild(i);
         }
+        
+        if(XRSettings.Instance.settings.movementType != MovementType.POIGaze)
+            HideThePOIs();
     }
 
     private void OnEnable() {

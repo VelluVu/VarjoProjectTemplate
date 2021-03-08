@@ -5,9 +5,18 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/Loading.unity
+    guid: 3592704e6971ef44db0d85b6be0b4c7c
+  - enabled: 1
+    path: Assets/Scenes/XREssentials.unity
+    guid: 31babebdd982daa478356dc578c5f354
+  - enabled: 1
+    path: Assets/Scenes/MenuScene.unity
+    guid: 0a0d29aea48c77549affcf798fe530aa
+  - enabled: 1
+    path: Assets/Scenes/PreviewScene.unity
+    guid: feb0334df3e9c404b92e16ab95d1badb
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 6882cc6a5235b9347922b17a912c3230, type: 2}
     Varjo.XR.Settings: {fileID: 11400000, guid: ae83dd86ff33c864cada8046aa1bd713, type: 2}

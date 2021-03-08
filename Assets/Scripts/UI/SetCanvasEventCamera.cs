@@ -9,8 +9,6 @@ public class SetCanvasEventCamera : MonoBehaviour
     public delegate void CanvasDelegate(SetCanvasEventCamera eventCameraSetter);
     public static event CanvasDelegate onCanvasEnable;
 
-    bool setRuntime;
-
     private void Awake() {
         canvas = GetComponent<Canvas>();
     }
@@ -25,8 +23,12 @@ public class SetCanvasEventCamera : MonoBehaviour
 
     public void SetWorldCamera(Camera cam)
     {
-        Debug.Log("Settings camera to : " + cam);
-        canvas.worldCamera = cam;
+        if(cam != null)
+        {
+            Debug.Log("Settings camera : " + cam.gameObject.name);
+
+            canvas.worldCamera = cam;
+        }
     }
 
     public void SettingChanged(SettingSO settings)
@@ -40,10 +42,10 @@ public class SetCanvasEventCamera : MonoBehaviour
         onCanvasEnable?.Invoke(this);
     }
 
-    private void Update() {
-        if(canvas.worldCamera == null && !setRuntime)
+    private void Update() 
+    {
+        if(canvas.worldCamera == null)
         {   
-            setRuntime = true;
             onCanvasEnable?.Invoke(this);
         }
     }
