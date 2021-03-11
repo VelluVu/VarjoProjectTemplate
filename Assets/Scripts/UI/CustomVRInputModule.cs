@@ -46,44 +46,50 @@ public class CustomVRInputModule : BaseInputModule
         pointerEventData.pointerCurrentRaycast = FindFirstRaycast(m_RaycastResultCache);
         currentObject = pointerEventData.pointerCurrentRaycast.gameObject;
         m_RaycastResultCache.Clear();
-
         HandlePointerExitAndEnter(pointerEventData, currentObject);
     }
 
-    public void ChangeUIRaycaster(SettingSO settings)
+    public void ChangeUIRaycaster(GameSettings settings)
     {
-        if(settings.controllersInUse)
+        
+        if(settings.CurrentHand == PreferredHand.Left)
         {
-            if(settings.currentHand == PreferredHand.Left)
-            {
-                //Debug.Log("Setting left camera!");
-                graphicRaycastCameras[2].gameObject.SetActive(false);
-                graphicRaycastCameras[1].gameObject.SetActive(true);
-                graphicRaycastCamera = graphicRaycastCameras[1];
-                device = InputDeviceCharacteristics.Left;
-                
-            }
-            else if(settings.currentHand == PreferredHand.Right)
-            {
-                //Debug.Log("Setting right camera!");
-                graphicRaycastCameras[1].gameObject.SetActive(false);
-                graphicRaycastCameras[2].gameObject.SetActive(true);
-                graphicRaycastCamera = graphicRaycastCameras[2];
-                device = InputDeviceCharacteristics.Right;
-            }
+            //Debug.Log("Setting left camera!");
+            graphicRaycastCameras[2].gameObject.SetActive(false);
+            graphicRaycastCameras[1].gameObject.SetActive(true);
+            graphicRaycastCamera = graphicRaycastCameras[1];
+            graphicRaycastCamera.GetComponent<UIRaycaster>().Activate();
+            device = InputDeviceCharacteristics.Left;
+            
         }
-        else
+        else if(settings.CurrentHand == PreferredHand.Right)
+        {
+            //Debug.Log("Setting right camera!");
+            graphicRaycastCameras[1].gameObject.SetActive(false);
+            graphicRaycastCameras[2].gameObject.SetActive(true);
+            graphicRaycastCamera = graphicRaycastCameras[2];
+            graphicRaycastCamera.GetComponent<UIRaycaster>().Activate();
+            device = InputDeviceCharacteristics.Right;
+        }
+        else if(settings.CurrentHand == PreferredHand.Hmd)
         {
             graphicRaycastCameras[1].gameObject.SetActive(false);
             graphicRaycastCameras[2].gameObject.SetActive(false);
             graphicRaycastCamera = graphicRaycastCameras[0];
             device = InputDeviceCharacteristics.HeadMounted;
         }
+        
+        Debug.Log(this + " Changed raycast camera : " + device + ", " + graphicRaycastCamera.gameObject.name);
     }
 
     public PointerEventData GetData()
     {
         return pointerEventData;
+    }
+    
+    public GameObject GetSelectedObject()
+    {
+        return currentObject;
     }
 
     public void SetCamera(SetCanvasEventCamera eventCameraSetter)
@@ -131,11 +137,16 @@ public class CustomVRInputModule : BaseInputModule
             ExecuteEvents.Execute(pointerEventData.pointerPress, pointerEventData, ExecuteEvents.pointerClickHandler);
         }
 
+        NullSelectedGameObject();
+        //Debug.Log("UI Button UP!");
+    }
+
+    public void NullSelectedGameObject()
+    {
         eventSystem.SetSelectedGameObject(null);
 
         pointerEventData.pressPosition = Vector2.zero;
         pointerEventData.pointerPress = null;
         pointerEventData.rawPointerPress = null;
-        //Debug.Log("UI Button UP!");
     }
 }

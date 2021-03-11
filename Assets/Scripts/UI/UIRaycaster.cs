@@ -12,38 +12,37 @@ public class UIRaycaster : MonoBehaviour
     [SerializeField]private float shootPointZ;
     Transform rayShootPoint;
     
-    [SerializeField] bool usingControllers;
+    [SerializeField]bool active = false;
+    XRCustomController controller;
     bool hits;
 
     private void Awake() {
         lineRenderer = GetComponent<LineRenderer>();
+        controller = GetComponentInParent<XRCustomController>();
         rayShootPoint = new GameObject("rayCastStart").transform;
         rayShootPoint.SetParent(transform);
         rayShootPoint.SetPositionAndRotation(transform.position,transform.rotation);
         rayShootPoint.transform.position = new Vector3(transform.position.x, transform.position.y, transform.forward.z * shootPointZ);
     }
 
-    private void OnEnable() {
-        XRSettings.onSettingChange += SettingChange;
-    }
 
-    private void OnDisable() {
-        XRSettings.onSettingChange -= SettingChange;
+    private void OnDisable() {    
+        active = false;
         HideRay();
     }
 
-    public void SettingChange(SettingSO settings)
+    
+
+    public void Activate()
     {
-        usingControllers = settings.controllersInUse;
+        active = true;
     }
 
     private void Update() 
     {
-        if(!usingControllers)
-        {
+        if(!active)
             return;
-        }
-        
+
         RayFromController();
         
     }

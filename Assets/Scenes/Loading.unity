@@ -167,3 +167,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   XREssentialsScene: XREssentials
+  menuScene: MenuScene
+  previewScene: PreviewScene

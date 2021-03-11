@@ -79,26 +79,26 @@ public class XRMovementSwitch : MonoBehaviour
         onMove?.Invoke(canMove);
     }
 
-    public void CheckMovementType(SettingSO newSettings)
+    public void CheckMovementType(GameSettings newSettings)
     {
-        if(preferredHand != newSettings.currentHand)
-            preferredHand = newSettings.currentHand;
-        if(usingControllers != newSettings.controllersInUse)
-            usingControllers = newSettings.controllersInUse;
+        if(preferredHand != newSettings.CurrentHand)
+            preferredHand = newSettings.CurrentHand;
+        if(usingControllers != newSettings.ControllersInUse)
+            usingControllers = newSettings.ControllersInUse;
         
-        if(currentMovementType == newSettings.movementType && currentXRMovement != null)
+        if(currentMovementType == newSettings.MovementType && currentXRMovement != null)
         {   
             return;
         }
 
-        if(currentXRMovement != null && currentMovementType != newSettings.movementType)
+        if(currentXRMovement != null && currentMovementType != newSettings.MovementType)
         {
             currentXRMovement.ExitState();
         }
+        Debug.Log(this + " Changed movement type!");
+        SetCurrentXRMovementType(newSettings.MovementType);
 
-        SetCurrentXRMovementType(newSettings.movementType);
-
-        currentMovementType = newSettings.movementType;
+        currentMovementType = newSettings.MovementType;
         
         currentXRMovement.StartState(this);
         ready = true;

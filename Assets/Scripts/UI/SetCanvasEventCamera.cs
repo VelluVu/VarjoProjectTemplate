@@ -25,15 +25,15 @@ public class SetCanvasEventCamera : MonoBehaviour
     {
         if(cam != null)
         {
-            Debug.Log("Settings camera : " + cam.gameObject.name);
+            Debug.Log("Settings camera : " + cam.transform.parent.gameObject.name);
 
             canvas.worldCamera = cam;
         }
     }
 
-    public void SettingChanged(SettingSO settings)
+    public void SettingChanged(GameSettings settings)
     {
-        if(settings.previousHand != settings.currentHand)
+        if(settings.PreviousHand != settings.CurrentHand)
             onCanvasEnable?.Invoke(this);
     }
 

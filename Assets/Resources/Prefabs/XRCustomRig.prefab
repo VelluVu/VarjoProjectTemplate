@@ -226,7 +226,9 @@ MonoBehaviour:
   uiRaycastMask:
     serializedVersion: 2
     m_Bits: 32
-  usingControllers: 0
+  gazePressIndicatorPrefab: {fileID: 1050244859323931112, guid: 6be17bc6756f63143abf25734bccccbc, type: 3}
+  gazePressIndicator: {fileID: 0}
+  preferredHand: 2
 --- !u!1 &5268797944507750725
 GameObject:
   m_ObjectHideFlags: 0

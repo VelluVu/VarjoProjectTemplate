@@ -12,7 +12,7 @@ public class HidePOIs : MonoBehaviour
             POIs[i] = transform.GetChild(i);
         }
         
-        if(XRSettings.Instance.settings.movementType != MovementType.POIGaze)
+        if(XRSettings.Instance.settings.MovementType != MovementType.POIGaze)
             HideThePOIs();
     }
 
@@ -24,9 +24,9 @@ public class HidePOIs : MonoBehaviour
         XRSettings.onSettingChange -= CheckSetting;
     }
 
-    public void CheckSetting(SettingSO newSetting)
+    public void CheckSetting(GameSettings newSetting)
     {
-        if(newSetting.movementType != MovementType.POIGaze)
+        if(newSetting.MovementType != MovementType.POIGaze)
         {
             HideThePOIs();
         }
@@ -38,6 +38,7 @@ public class HidePOIs : MonoBehaviour
 
     private void ShowThePOIs()
     {
+        Debug.Log("Showing Points of Interest");
         for (var i = 0; i < POIs.Length; i++)
         {
             POIs[i].gameObject.SetActive(true);
@@ -46,7 +47,8 @@ public class HidePOIs : MonoBehaviour
 
     private void HideThePOIs()
     {
-         for (var i = 0; i < POIs.Length; i++)
+        Debug.Log("Hiding Points of Interest");
+        for (var i = 0; i < POIs.Length; i++)
         {
             POIs[i].gameObject.SetActive(false);
         }

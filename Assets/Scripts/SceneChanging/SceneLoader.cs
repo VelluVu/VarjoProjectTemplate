@@ -15,12 +15,14 @@ public class SceneLoader : MonoBehaviour
 
     public void UnloadScene(string sceneName)
     {
-        StartCoroutine(UnloadYourAsyncScene(sceneName));
+        if(SceneManager.GetSceneByName(sceneName).isLoaded)
+            StartCoroutine(UnloadYourAsyncScene(sceneName));
     }
 
     public void LoadSceneAdditive(string sceneName)
     {
-        StartCoroutine(LoadYourAsyncSceneAdditive(sceneName));
+        if(!SceneManager.GetSceneByName(sceneName).isLoaded)
+            StartCoroutine(LoadYourAsyncSceneAdditive(sceneName));
     }
 
     IEnumerator LoadYourAsyncSceneAdditive(string sceneName)
@@ -29,13 +31,13 @@ public class SceneLoader : MonoBehaviour
         // This is particularly good for creating loading screens.
         // You could also load the Scene by using sceneBuildIndex. In this case Scene2 has
         // a sceneBuildIndex of 1 as shown in Build Settings.
-        
+      
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName,LoadSceneMode.Additive);
         
         // Wait until the asynchronous scene fully loads
         while (!asyncLoad.isDone)
         {
-            Debug.Log(asyncLoad.progress);
+            //Debug.Log(asyncLoad.progress);
             yield return null;
         }
     }
@@ -52,7 +54,7 @@ public class SceneLoader : MonoBehaviour
         // Wait until the asynchronous scene fully loads
         while (!asyncLoad.isDone)
         {
-            Debug.Log(asyncLoad.progress);
+            //Debug.Log(asyncLoad.progress);
             yield return null;
         }
     }

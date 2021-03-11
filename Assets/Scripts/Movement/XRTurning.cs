@@ -40,9 +40,10 @@ public class XRTurning : MonoBehaviour
         XRSettings.onSettingChange -= OnSettingChange;
     }
 
-    public void OnSettingChange(SettingSO newSetting)
+    public void OnSettingChange(GameSettings newSetting)
     {
-        isTurningToggled = newSetting.snapTurningOn;
+        isTurningToggled = newSetting.SnapTurningOn;
+        Debug.Log(this.gameObject.name + " Snap turning is : " + isTurningToggled);
     }
 
     public void IsMoving(bool isMoving)

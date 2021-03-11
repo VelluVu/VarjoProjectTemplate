@@ -75,4 +75,20 @@ public class XRCustomController : MonoBehaviour
             model.gameObject.name = hand.ToString() + " Controller Model";
         }
     }
+
+    public PreferredHand GetPreferredHand()
+    {
+        if(hand.HasFlag(InputDeviceCharacteristics.Left))
+        {
+            return PreferredHand.Left;
+        }
+        else if(hand.HasFlag(InputDeviceCharacteristics.Right))
+        {
+            return PreferredHand.Right;
+        }
+        else
+        {
+            return PreferredHand.Hmd;
+        }
+    }
 }
