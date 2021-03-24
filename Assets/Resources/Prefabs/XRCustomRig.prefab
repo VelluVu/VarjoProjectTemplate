@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 821916537}
   m_Layer: 13
   m_Name: Hmd
-  m_TagString: Untagged
+  m_TagString: HMD
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -242,7 +242,7 @@ GameObject:
   - component: {fileID: 4666538377638062198}
   m_Layer: 13
   m_Name: LeftController
-  m_TagString: Untagged
+  m_TagString: LController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -307,7 +307,7 @@ GameObject:
   - component: {fileID: 5268797944623397207}
   m_Layer: 13
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: Body
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -357,7 +357,7 @@ GameObject:
   - component: {fileID: 2134784884}
   m_Layer: 13
   m_Name: XRCustomRig
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -492,7 +492,7 @@ GameObject:
   - component: {fileID: 400937429592555781}
   m_Layer: 13
   m_Name: RightController
-  m_TagString: Untagged
+  m_TagString: RController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

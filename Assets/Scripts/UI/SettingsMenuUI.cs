@@ -1,7 +1,11 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// Sets SettingsUI Button listeners and initializes setting panels.
+/// </summary>
 public class SettingsMenuUI : MonoBehaviour
 {
     public GameObject settingPanelPrefab;
@@ -23,7 +27,16 @@ public class SettingsMenuUI : MonoBehaviour
 
         settingPanels[0].changeLeftButton.onClick.AddListener(()=>ChangePreferredHandLeft(settingPanels[0]));
         settingPanels[0].changeRightButton.onClick.AddListener(()=>ChangePreferredHandRight(settingPanels[0]));
-        settingPanels[0].SetText("Preferred Hand: " + XRSettings.Instance.settings.PreferredHand);
+        ChangeText("Preferred Hand: " + XRSettings.Instance.settings.PreferredHand, settingPanels[0]);
+
+        settingPanels[1].changeLeftButton.onClick.AddListener(()=>ChangeMovementTypeLeft(settingPanels[1]));
+        settingPanels[1].changeRightButton.onClick.AddListener(()=>ChangeMovementTypeRight(settingPanels[1]));
+        ChangeText("Movement Type: " + XRSettings.Instance.settings.MovementType.ToString(), settingPanels[1]);
+
+        settingPanels[2].changeLeftButton.onClick.AddListener(()=>ChangeSnapTurning(settingPanels[2]));
+        settingPanels[2].changeRightButton.onClick.AddListener(()=>ChangeSnapTurning(settingPanels[2]));
+        ChangeText(GetSnapStatusText(XRSettings.Instance.settings.SnapTurningOn), settingPanels[2]);
+
     }
 
     public void ChangePreferredHandRight(SettingPanel settingPanel)
@@ -60,12 +73,11 @@ public class SettingsMenuUI : MonoBehaviour
         if(!XRSettings.Instance.settings.ControllersInUse)
         {
             XRSettings.Instance.ChangePreferredHand(newPref);
-            settingPanel.SetText("Preferred Hand: " + newPref.ToString().ToUpper());
+            settingPanel.SetText("Preferred Hand: " + newPref.ToString());
             return;
         }
 
-        //Debug.Log(newPref + " " + (int)newPref + " " + (PreferredHand)newPref);
-
+        //Can't change to controllers if no controllers are connected!
         if(pref == PreferredHand.Hmd && XRSettings.Instance.settings.RightControllerConnected)
         {
             newPref = PreferredHand.Right;
@@ -79,11 +91,65 @@ public class SettingsMenuUI : MonoBehaviour
             newPref = PreferredHand.Hmd;
         }
 
-        //Debug.Log(newPref + " " + (int)newPref + " " + (PreferredHand)newPref);
-
         XRSettings.Instance.ChangePreferredHand(newPref);
-        settingPanel.SetText("Preferred Hand: " + newPref.ToString().ToUpper());
+        settingPanel.SetText("Preferred Hand: " + newPref.ToString());
     }
 
-   
+    public void ChangeMovementTypeRight(SettingPanel settingPanel)
+    {
+        MovementType currentMovementType = XRSettings.Instance.settings.MovementType;
+        int enumVal = (int)currentMovementType;
+        int lastVal = (int)Enum.GetValues(typeof(MovementType)).Cast<MovementType>().Last();
+        
+        enumVal++;
+
+        if(enumVal > lastVal)
+            enumVal = 0;
+        
+        XRSettings.Instance.ChangeMovementType((MovementType)enumVal);
+        ChangeText("Movement Type: " + ((MovementType)enumVal).ToString(), settingPanel);
+    }
+
+    public void ChangeMovementTypeLeft(SettingPanel settingPanel)
+    {
+        MovementType currentMovementType = XRSettings.Instance.settings.MovementType;
+        int enumVal = (int)currentMovementType;
+        int lastVal = (int)Enum.GetValues(typeof(MovementType)).Cast<MovementType>().Last();
+        
+        enumVal--;
+
+        if(enumVal < 0)
+            enumVal = lastVal;
+        
+        XRSettings.Instance.ChangeMovementType((MovementType)enumVal);
+        ChangeText("Movement Type: " + ((MovementType)enumVal).ToString(), settingPanel);
+    }
+
+    public void ChangeText(string text, SettingPanel settingPanel)
+    {
+        settingPanel.SetText(text);
+    }
+
+    public void ChangeSnapTurning(SettingPanel settingPanel)
+    {
+        bool state = !XRSettings.Instance.settings.SnapTurningOn;
+        XRSettings.Instance.ChangeSnapTurning(state);
+        settingPanel.SetText(GetSnapStatusText(state));
+    }
+
+    /// <summary>
+    /// Just a helper function to convert false true into off on.
+    /// </summary>
+    /// <param name="state">the boolean value</param>
+    /// <returns>ON||OFF</returns>
+    public string GetSnapStatusText(bool state)
+    {
+        string text = "Snap Turning: ";
+        if(state == false)
+            text += "OFF";
+        else
+            text += "ON";
+
+        return text;
+    }  
 }

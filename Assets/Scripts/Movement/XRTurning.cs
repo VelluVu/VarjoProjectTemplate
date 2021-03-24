@@ -16,6 +16,14 @@ public class XRTurning : MonoBehaviour
 
     bool moving = false;
     bool isTurningToggled = false;
+    Vector3 cross;
+    float dotProduct;
+
+    bool invokedVisual = false;
+
+    public delegate void TurningDelegate(bool right);
+    public static event TurningDelegate onTurningPossible;
+    public static event TurningDelegate onTurningNotPossible;
 
     private void Awake() 
     {
@@ -24,20 +32,18 @@ public class XRTurning : MonoBehaviour
             hmd = rig.hmd;
     }
 
-    private void Start() {
-        coroutine = CheckTick();
-    }
-
     private void OnEnable() {
         XRCustomRig.onHeadMountedDeviceIsPresent += AlignHMD;
         XRMovementSwitch.onMove += IsMoving;
         XRSettings.onSettingChange += OnSettingChange;
+        XRInputManager.onPrimaryButtonDown += AcceptTurn;
     }
 
     private void OnDisable() {
         XRCustomRig.onHeadMountedDeviceIsPresent -= AlignHMD;
         XRMovementSwitch.onMove -= IsMoving;
         XRSettings.onSettingChange -= OnSettingChange;
+        XRInputManager.onPrimaryButtonDown -= AcceptTurn;
     }
 
     public void OnSettingChange(GameSettings newSetting)
@@ -56,34 +62,17 @@ public class XRTurning : MonoBehaviour
        hmd.forward = rig.transform.forward;
     }
 
-    private void Update() 
+    public void AcceptTurn(InputDeviceCharacteristics device)
     {
         if(!isTurningToggled)
             return;
-
+            
         if(moving)
             return;
 
-        SnapTurn();
-    }
-
-    IEnumerator CheckTick()
-    {
-        while(true)
-        {          
-            yield return new WaitForSeconds(1f);
-            recentlyTurned = false;
-        }
-    }
-
-    private void SnapTurn()
-    {
-        float dotProduct = Vector3.Dot(hmd.forward, rig.transform.forward);
-        
-        if (dotProduct < 0 && !recentlyTurned) //if looking opposite from body direction
-        {
-            StopCoroutine(coroutine);
-            Vector3 cross = Vector3.Cross(rig.transform.forward, hmd.forward);
+        if (dotProduct < 0) //if looking opposite from body direction
+        {       
+            //cross = Vector3.Cross(rig.transform.forward, hmd.forward);
 
             if (cross.y > 0) // head is turned 90deg to the right from body
             {
@@ -99,9 +88,53 @@ public class XRTurning : MonoBehaviour
                 recentlyTurned = true;
             }
         }
-        if(dotProduct > 0 && recentlyTurned)
-        {  
-            StartCoroutine(coroutine);
+    }
+
+    private void Update() 
+    {
+        if(!isTurningToggled)
+            return;
+
+        if(moving)
+            return;
+
+        SnapTurn();
+    }
+
+    private void SnapTurn()
+    {
+        dotProduct = Vector3.Dot(hmd.forward, rig.transform.forward);
+        
+        if (dotProduct < 0) //if looking opposite from body direction
+        {
+           
+            cross = Vector3.Cross(rig.transform.forward, hmd.forward);
+
+            if (cross.y > 0) // head is turned 90deg to the right from body
+            {
+                if(!invokedVisual)
+                {
+                    invokedVisual = true;
+                    onTurningPossible?.Invoke(true);
+                }
+            }
+            if (cross.y < 0) // head is turned 90deg to the left from body
+            {
+                if(!invokedVisual)
+                {
+                    invokedVisual = true;
+                    onTurningPossible?.Invoke(false);
+                }
+            }
+        }
+
+        if(dotProduct > 0)
+        {    
+            if(invokedVisual)
+            {
+                invokedVisual = false;
+                onTurningNotPossible?.Invoke(false);
+            }
         }
     }
 }

@@ -83,7 +83,7 @@ public class UIGazeRaycaster : MonoBehaviour
             }
             float scaleValue = value / 1;
             gazeRadialImage.fillAmount = scaleValue * value;
-            //gazePressIndicator.transform.rotation = Quaternion.FromToRotation(gazePressIndicator.transform.up,hit.normal)*gazePressIndicator.transform.rotation;
+           
             gazePressIndicator.transform.position = hit.point - transform.forward;
             gazePressIndicator.transform.LookAt(transform.position);
 
@@ -114,7 +114,7 @@ public class UIGazeRaycaster : MonoBehaviour
                 {
                     gazeVisual = Instantiate(gazeVisualPrefab, hit.point, gazeVisualPrefab.transform.rotation);
                     gazeVisual.gameObject.name = "UI Gaze Visual";
-                    //gazeVisual.transform.rotation = Quaternion.FromToRotation(gazeVisual.transform.up,hit.normal)*gazeVisual.transform.rotation;
+                    
                 }
                 else
                 {
@@ -122,7 +122,7 @@ public class UIGazeRaycaster : MonoBehaviour
                         gazeVisual.SetActive(true);
                         
                     gazeVisual.transform.position = hit.point;
-                    //gazeVisual.transform.rotation = Quaternion.FromToRotation(gazeVisual.transform.up,hit.normal)*gazeVisual.transform.rotation;
+                   
                 }
             }
         }

@@ -36,9 +36,7 @@ public class XRGazeMovement : IXRMovement
         float xAngle = control.rig.hmd.transform.rotation.eulerAngles.x;
        
         bool moving = xAngle < control.movementVariables.gazeAngleMax && xAngle > control.movementVariables.gazeAngleMin;
-        RaycastHit hit;
-        bool hits = Physics.Raycast(control.rig.hmd.position, control.rig.hmd.forward, out hit, 5f);
-
+        
         if (moving)
         {  
             if(!canMove)
@@ -74,7 +72,10 @@ public class XRGazeMovement : IXRMovement
     }
     void MoveToGazeDirection()
     {
-        Vector3 moveDir = new Vector3(control.rig.hmd.transform.forward.x, control.rig.transform.forward.y, control.rig.hmd.transform.forward.z);
+        Vector3 moveDir = new Vector3(control.rig.hmd.transform.forward.x, 
+                                      control.rig.transform.forward.y, 
+                                      control.rig.hmd.transform.forward.z);
+
         control.rig.transform.position += moveDir * control.movementVariables.moveSpeed * Time.deltaTime;
     }
 }

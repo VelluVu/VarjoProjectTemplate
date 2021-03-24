@@ -24,14 +24,17 @@ public class XRPOIGazeMovement : IXRMovement
    
     public void UpdateState()
     {
-        //TODO : Make movement based on waypoints and trigger movement somehow.
         POIGazeMovement();
     }
 
     public void POIGazeMovement()
     {
         RaycastHit hit; 
-        bool hits = Physics.Raycast(control.rig.hmd.transform.position, control.rig.hmd.transform.forward, out hit, control.movementVariables.raycastDistance, control.movementVariables.POIMask);
+        bool hits = Physics.Raycast(control.rig.hmd.transform.position, 
+                                    control.rig.hmd.transform.forward, 
+                                    out hit, 
+                                    control.movementVariables.raycastDistance, 
+                                    control.movementVariables.POIMask);
         
         if(hits)
         {

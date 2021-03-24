@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 1481.7754, g: 1835.8867, b: 2430.4492, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -157,7 +157,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d99738cce062317479ecaa156620a5fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settings: {fileID: 11400000, guid: ff0da22d0f7b87e48bf102e73a65c07c, type: 2}
+  settings:
+    isDirty: 0
+    controllersInUse: 0
+    leftControllerConnected: 0
+    rightControllerConnected: 0
+    snapTurningOn: 0
+    movementType: 0
+    currentHand: 0
+    previousHand: 0
+    preferredHand: 0
 --- !u!4 &1396323564
 Transform:
   m_ObjectHideFlags: 0
@@ -351,8 +360,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 339e71d68c37bd441bd93931789e328b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dirArrowPrefab: {fileID: 3193341454913486119, guid: c2e259292a8a274408db518e704382dd, type: 3}
+  gazeMoveVisualPrefab: {fileID: 3193341454913486119, guid: c2e259292a8a274408db518e704382dd, type: 3}
   teleportIndicatorPrefab: {fileID: 4959488583694565938, guid: 19c808855f0d7cf4698129f905686ff2, type: 3}
+  snapTurnVisualPrefab: {fileID: 8939848828625725150, guid: 3811f843a70c30249ab93e5a4c9da131, type: 3}
 --- !u!4 &1752955946
 Transform:
   m_ObjectHideFlags: 0

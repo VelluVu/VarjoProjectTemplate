@@ -37,7 +37,6 @@ public class XRLerpMovement : IXRMovement
     
     public void UpdateState()
     {
-        //TODO : Make movement based on waypoints and trigger movement somehow.
         if(control.Wps == null || control.Wps.Length == 0)
         {
             return;
@@ -46,7 +45,9 @@ public class XRLerpMovement : IXRMovement
         if(moving)
         {
             control.movementVariables.lerpValue += Time.deltaTime * control.movementVariables.lerpSpeed;
-            control.rig.transform.position = Vector3.Lerp(control.rig.transform.position, control.Wps[currentWPIndex].position, control.movementVariables.lerpValue);
+            control.rig.transform.position = Vector3.Lerp(control.rig.transform.position, 
+                                                          control.Wps[currentWPIndex].position, 
+                                                          control.movementVariables.lerpValue);
             
             if(control.movementVariables.lerpValue >= 1.0f)
             {

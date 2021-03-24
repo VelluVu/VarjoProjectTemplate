@@ -1,17 +1,32 @@
+using System;
 using UnityEngine;
 
+/// <summary>
+/// This class listens the movement related events and indicates the possibility of movement for player.
+/// </summary>
 public class MoveEventListener : MonoBehaviour
 {
 
-    [SerializeField] GameObject dirArrowPrefab;
-    GameObject dirArrow;
+    [SerializeField] GameObject gazeMoveVisualPrefab;
+    GameObject gazeMoveVisual;
 
     [SerializeField] GameObject teleportIndicatorPrefab;
     GameObject teleportIndicator;
 
+    [SerializeField] GameObject snapTurnVisualPrefab;
+    GameObject snapTurnVisual;
+    SnapTurnVisualAnimate snapAnim;
+
     MaterialSwapper matSwap;
     Transform hmd;
     Transform controller;
+    Camera hmdCam;
+    Transform rig;
+
+    private void Awake() {
+        hmdCam = GameObject.FindGameObjectWithTag("HMD").GetComponent<Camera>();
+        rig = GameObject.FindGameObjectWithTag("Rig").transform;
+    }
 
     private void OnEnable() {
         XRPOIGazeMovement.onUnableToMove += CantMove;
@@ -20,8 +35,10 @@ public class MoveEventListener : MonoBehaviour
         XRGazeMovement.onNonCorrectMoveAngle += HideGazeVisual;
         XRTeleportMovement.onTeleportPossible += ShowTeleportIndicator;
         XRTeleportMovement.onTeleportNotPossible += HideTeleportIndicator;
+        XRTurning.onTurningPossible += ShowSnapTurnVisual;
+        XRTurning.onTurningNotPossible += HideSnapTurnVisual;
     }
-
+    
     private void OnDisable() {
         XRPOIGazeMovement.onUnableToMove -= CantMove;
         XRPOIGazeMovement.onAbleToMove -= CanMove;
@@ -29,46 +46,45 @@ public class MoveEventListener : MonoBehaviour
         XRGazeMovement.onNonCorrectMoveAngle -= HideGazeVisual;
         XRTeleportMovement.onTeleportPossible -= ShowTeleportIndicator;
         XRTeleportMovement.onTeleportNotPossible -= HideTeleportIndicator;
+        XRTurning.onTurningPossible -= ShowSnapTurnVisual;
+        XRTurning.onTurningNotPossible -= HideSnapTurnVisual;
     }
 
     private void Update() {
-        if(dirArrow != null && hmd != null && dirArrow.activeSelf)
+        if(gazeMoveVisual != null && hmd != null && gazeMoveVisual.activeSelf)
         {
             
             Vector3 position = Vector3.ProjectOnPlane(hmd.forward, Vector2.up) + new Vector3(hmd.position.x, 0.1f, hmd.position.z);
-            dirArrow.transform.position = position;
-            dirArrow.transform.rotation = Quaternion.Euler(new Vector3(90.01f, hmd.rotation.eulerAngles.y, 0));
+            gazeMoveVisual.transform.position = position;
+            gazeMoveVisual.transform.rotation = Quaternion.Euler(new Vector3(90.01f, hmd.rotation.eulerAngles.y, 0));
         }
     }
 
     private void HideGazeVisual(Transform hmd)
     {
-        //TODO : hide visual
-        if(dirArrow != null)
-            dirArrow.SetActive(false);
+        if(gazeMoveVisual != null)
+            gazeMoveVisual.SetActive(false);
     }
 
     private void ShowGazeVisual(Transform hmd)
     {
         this.hmd = hmd;
         Vector3 position = Vector3.ProjectOnPlane(hmd.forward, Vector2.up) + new Vector3(this.hmd.position.x, 0.1f, this.hmd.position.z);
-        //TODO : show visuals
-        if(dirArrow == null)
+        
+        if(gazeMoveVisual == null)
         {
-            dirArrow = Instantiate(dirArrowPrefab, position, Quaternion.Euler(new Vector3(90.01f, this.hmd.rotation.eulerAngles.y, 0)));
+            gazeMoveVisual = Instantiate(gazeMoveVisualPrefab, position, Quaternion.Euler(new Vector3(90.01f, this.hmd.rotation.eulerAngles.y, 0)));
         }
         else
         {
-            dirArrow.SetActive(true);
-            dirArrow.transform.position = position;
-            dirArrow.transform.rotation = Quaternion.Euler(new Vector3(90.01f, this.hmd.rotation.eulerAngles.y, 0));
+            gazeMoveVisual.SetActive(true);
+            gazeMoveVisual.transform.position = position;
+            gazeMoveVisual.transform.rotation = Quaternion.Euler(new Vector3(90.01f, this.hmd.rotation.eulerAngles.y, 0));
         }
     }
 
     private void CanMove(Transform target)
     {
-        //Debug.Log("Can Move");
-        //TODO: Show player that now is time to press button and able to move.
         if(target != null)
         {
             matSwap = target.GetComponent<MaterialSwapper>();
@@ -79,8 +95,6 @@ public class MoveEventListener : MonoBehaviour
 
     private void CantMove(Transform target)
     {
-        //Debug.Log("Can't Move");
-        //TODO: Remove the signs of possibilities for movement.
         if(matSwap != null)
         {
             matSwap.SetNormalMaterial();
@@ -118,4 +132,32 @@ public class MoveEventListener : MonoBehaviour
             teleportIndicator.transform.rotation = Quaternion.FromToRotation(teleportIndicator.transform.up,hit.normal)*teleportIndicator.transform.rotation;
         }
     }
+
+    private void ShowSnapTurnVisual(bool right)
+    {
+        if(snapTurnVisual == null)
+        {
+            snapTurnVisual = Instantiate(snapTurnVisualPrefab, hmdCam.transform.position + hmdCam.transform.forward, Quaternion.identity);
+            snapAnim = snapTurnVisual.GetComponent<SnapTurnVisualAnimate>();
+            snapAnim.SetPosAndRot(hmdCam.transform, rig, right);  
+        }
+
+        if(!snapTurnVisual.activeSelf)
+        {
+            snapTurnVisual.SetActive(true);
+        }
+
+        if(snapTurnVisual != null)
+        { 
+            snapAnim.SetPosAndRot(hmdCam.transform, rig, right);  
+        }
+        
+    }
+    
+    private void HideSnapTurnVisual(bool right)
+    {
+        if(snapTurnVisual != null)
+            snapTurnVisual.SetActive(false);
+    }
+    
 }

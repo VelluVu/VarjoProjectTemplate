@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -85,7 +84,11 @@ public class XRTeleportMovement : IXRMovement
     void WithControllers()
     {
         Transform c = control.rig.GetControllerTransform(control.preferredHand);
-        bool hits = Physics.Raycast(c.position, c.forward, out hit, control.movementVariables.raycastDistance, control.movementVariables.raycastLayerMask);
+        bool hits = Physics.Raycast(c.position, 
+                                    c.forward, 
+                                    out hit, 
+                                    control.movementVariables.raycastDistance, 
+                                    control.movementVariables.raycastLayerMask);
         
         if(hits)
         {
@@ -121,7 +124,11 @@ public class XRTeleportMovement : IXRMovement
     void WithHMD()
     {
         //TODO : Make teleport movement that works with headset button
-        bool hits = Physics.Raycast(control.rig.hmd.position, control.rig.hmd.forward, out hit, control.movementVariables.raycastDistance, control.movementVariables.raycastLayerMask);
+        bool hits = Physics.Raycast(control.rig.hmd.position, 
+                                    control.rig.hmd.forward, 
+                                    out hit, 
+                                    control.movementVariables.raycastDistance, 
+                                    control.movementVariables.raycastLayerMask);
 
         if(hits)
         {
