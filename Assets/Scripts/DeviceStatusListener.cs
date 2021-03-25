@@ -1,10 +1,10 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 
 /// <summary>
-/// Class for device connection testing
+/// @Author: Veli-Matti Vuoti
+/// Class for device connection testing.
 /// </summary>
 public class DeviceStatusListener : MonoBehaviour
 {

@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.XR;
 
 /// <summary>
+/// @Author: Veli-Matti Vuoti
 /// Represents the rig and contains the rig related variables and functions.
 /// </summary>
 public class XRCustomRig : MonoBehaviour
@@ -58,6 +59,11 @@ public class XRCustomRig : MonoBehaviour
         InputDevices.deviceConnected -= DeviceConnected;
     }
 
+    /// <summary>
+    /// On Device Disconnected event, this function is called to 
+    /// change the device related class variables.
+    /// </summary>
+    /// <param name="device">Disconnected Device</param>
     void DeviceDisconnected(InputDevice device)
     {
         //Debug.Log(device.characteristics + " Disconnected!");
@@ -82,6 +88,11 @@ public class XRCustomRig : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// On Device Connected event, this function is called to
+    /// change the device related class variables.
+    /// </summary>
+    /// <param name="device"></param>
     void DeviceConnected(InputDevice device)
     {
         //Debug.Log(device.characteristics + " Connected!");
@@ -116,6 +127,11 @@ public class XRCustomRig : MonoBehaviour
          }
     }
     
+    /// <summary>
+    /// Used to fetch controller matching the preferredhand enum.
+    /// </summary>
+    /// <param name="hand">Used to check the inputdevice XRNode</param>
+    /// <returns>The Inputdevice left or right controller</returns>
     public InputDevice GetControllerDevice(PreferredHand hand)
     {
         XRNode node = XRNode.RightHand;
@@ -131,6 +147,11 @@ public class XRCustomRig : MonoBehaviour
         return InputDevices.GetDeviceAtXRNode(node);
     }
 
+    /// <summary>
+    /// Used to get controller transform matching the preferredhand enum.
+    /// </summary>
+    /// <param name="hand">Used to check the correct transform</param>
+    /// <returns>the transform of left or right controller</returns>
     public Transform GetControllerTransform(PreferredHand hand)
     {
         Transform c = rightController.transform;
@@ -146,6 +167,10 @@ public class XRCustomRig : MonoBehaviour
         return c;
     }
 
+    /// <summary>
+    /// Automatically changes the collider height to match the player device height.
+    /// Usefull for crouching checking collision on walls etc.
+    /// </summary>
     public void AdjustCollider()
     {
         float distanceFromHeadToGround = Vector3.Distance(hmd.position, transform.position);
@@ -190,6 +215,11 @@ public class XRCustomRig : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Adds controller to controller list, 
+    /// when 2 detected invokes controllers present event.
+    /// </summary>
+    /// <param name="device">the Device to add into the list</param>
     void AddController(InputDevice device)
     {
         if(!controllers.Contains(device))
@@ -205,6 +235,11 @@ public class XRCustomRig : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Removes controller device from the controllers list,
+    /// when 0 detected invokes the controllers not present event.
+    /// </summary>
+    /// <param name="device">Removable device</param>
     void RemoveController(InputDevice device)
     {
         if(controllers.Count > 0)

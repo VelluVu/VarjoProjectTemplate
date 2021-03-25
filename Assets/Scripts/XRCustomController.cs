@@ -1,8 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 
+/// <summary>
+/// @Author: Veli-Matti Vuoti
+/// This class represents the controller, 
+/// instantiates the model for hand and 
+/// knows which hand controller this is.
+/// </summary>
 public class XRCustomController : MonoBehaviour
 {
     public GameObject modelPrefab;
@@ -47,6 +51,10 @@ public class XRCustomController : MonoBehaviour
         InputDevices.deviceDisconnected -= CheckDisconnectedDevice;
     }
 
+    /// <summary>
+    /// Called when this controller is connected instantiates the model.
+    /// </summary>
+    /// <param name="device">Connected inputdevice</param>
     void CheckConnectedDevice(InputDevice device)
     {
         
@@ -59,6 +67,10 @@ public class XRCustomController : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Called when disconnected.
+    /// </summary>
+    /// <param name="device">Disconnected inputdevice</param>
     void CheckDisconnectedDevice(InputDevice device)
     {
         if(device.characteristics.HasFlag(hand))
@@ -67,6 +79,9 @@ public class XRCustomController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Instantiates model if it's null.
+    /// </summary>
     void InstantiateModel()
     {
         if(model == null)
@@ -76,6 +91,10 @@ public class XRCustomController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Used to get the preferredhand which this controller is.
+    /// </summary>
+    /// <returns>the correct preferredhand</returns>
     public PreferredHand GetPreferredHand()
     {
         if(hand.HasFlag(InputDeviceCharacteristics.Left))

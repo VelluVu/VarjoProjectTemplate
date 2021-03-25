@@ -1,7 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// @Author: Veli-Matti Vuoti
+/// Class to draw wire sphere gizmo in object position
+/// </summary>
 public class PositionGizmo : MonoBehaviour
 {
     public Color gizmoColor = Color.blue;

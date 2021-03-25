@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Activates UI when hit UItrigger
+/// @Author: Veli-Matti Vuoti
+/// This class activates the UI when hit the UItrigger
 /// </summary>
 public class UIActivator : MonoBehaviour
 {

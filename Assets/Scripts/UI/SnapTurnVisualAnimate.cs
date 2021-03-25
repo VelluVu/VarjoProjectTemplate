@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Handles the moving of arrow sprite
+/// @Author: Veli-Matti Vuoti
+/// This class handles the animation of arrow sprite which is used for snap turning.
 /// </summary>
 public class SnapTurnVisualAnimate : MonoBehaviour
 {
@@ -17,6 +16,12 @@ public class SnapTurnVisualAnimate : MonoBehaviour
     Vector3 endPoint;
     Vector3 startPoint;
 
+    /// <summary>
+    /// Sets the Arrow position and the other position variables.
+    /// </summary>
+    /// <param name="hmd">hmd, main camera transform</param>
+    /// <param name="rig">player position transform</param>
+    /// <param name="direction">look direction</param>
     public void SetPosAndRot(Transform hmd, Transform rig, bool direction)
     {
         Vector3 lookDir = (hmd.forward - hmd.position).normalized;
@@ -35,8 +40,6 @@ public class SnapTurnVisualAnimate : MonoBehaviour
 
         endPoint = startPoint + transform.forward * moveDistance;
     }
-
-   
 
     private void Update() 
     {

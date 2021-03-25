@@ -10,8 +10,6 @@ public class XRTurning : MonoBehaviour
     
     XRCustomRig rig;
     Transform hmd;
-
-    bool recentlyTurned = false;
     IEnumerator coroutine;
 
     bool moving = false;
@@ -80,12 +78,10 @@ public class XRTurning : MonoBehaviour
                 //Debug.Log("Cross product : " + Vector3.Cross(rig.transform.forward, hmd.forward)); this used to know which way turning -y left y right
                 //Snap turn body 90 degrees right
                 rig.transform.Rotate(Vector3.up, 90);   
-                recentlyTurned = true;
             }
             if (cross.y < 0) // head is turned 90deg to the left from body
             {
                 rig.transform.Rotate(Vector3.up, -90);
-                recentlyTurned = true;
             }
         }
     }

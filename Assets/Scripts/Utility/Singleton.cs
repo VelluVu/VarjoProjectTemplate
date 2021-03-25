@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 /// <summary>
-/// Makes a monobehavior singleton when inherited.
+/// This class makes a monobehavior singleton when inherited from.
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public class Singleton<T> : MonoBehaviour where T : MonoBehaviour

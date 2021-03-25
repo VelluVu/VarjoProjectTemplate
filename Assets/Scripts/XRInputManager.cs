@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityEngine.XR;
 
+/// <summary>
+/// @Author: Veli-Matti Vuoti
+/// Captures the inputs and invokes events for different states of presses.
+/// </summary>
 public class XRInputManager : MonoBehaviour
 {
     InputDevice hmd;
@@ -48,6 +52,11 @@ public class XRInputManager : MonoBehaviour
         hmd = controller;
     }
 
+    /// <summary>
+    /// Returns true or false primary button press, depending on the parameter Preferredhand.
+    /// </summary>
+    /// <param name="hand">The Hand which press is checked</param>
+    /// <returns></returns>
     public bool GetPrimaryButtonControlPress(PreferredHand hand)
     {
         if(hand == PreferredHand.Left)
@@ -58,6 +67,10 @@ public class XRInputManager : MonoBehaviour
         {
             return rightControllerPrimaryButtonPress;
         }
+        if(hand == PreferredHand.Hmd)
+        {
+            return hmdPrimaryButtonPress;
+        }
 
         return false;
     }
@@ -67,6 +80,9 @@ public class XRInputManager : MonoBehaviour
         CheckPrimaryButtonInput();
     }
 
+    /// <summary>
+    /// Checks the primary press inputs for all main devices.
+    /// </summary>
     private void CheckPrimaryButtonInput()
     {
         if (hmd != null)

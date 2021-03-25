@@ -4,7 +4,8 @@ using System.Linq;
 using UnityEngine;
 
 /// <summary>
-/// Sets SettingsUI Button listeners and initializes setting panels.
+/// @Author: Veli-Matti Vuoti
+/// This class sets SettingsUI Button listeners and initializes setting panels.
 /// </summary>
 public class SettingsMenuUI : MonoBehaviour
 {
