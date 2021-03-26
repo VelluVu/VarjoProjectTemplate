@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
 /// <summary>
+/// @Author: Veli-Matti Vuoti
 /// This class is working as a statepattern for movementstyles and switching the movementstyle when settings change.
 /// </summary>
 public class XRMovementSwitch : MonoBehaviour
@@ -29,6 +30,9 @@ public class XRMovementSwitch : MonoBehaviour
         InitWaypointArray();
     }
 
+    /// <summary>
+    /// Initializes the movement objects.
+    /// </summary>
     public void InitMovementStyles()
     {
         xRGazeMovement = new XRGazeMovement();
@@ -37,6 +41,11 @@ public class XRMovementSwitch : MonoBehaviour
         xRTeleportMovement = new XRTeleportMovement();
     }
 
+    /// <summary>
+    /// Initializes the waypoints for linear interpolation movement,
+    /// by searching object named Waypoints
+    /// if using LERP movement have waypoints setup on the scene with parent object Waypoints !
+    /// </summary>
     public void InitWaypointArray()
     {
         if(Wps == null || Wps.Length == 0)
@@ -74,11 +83,23 @@ public class XRMovementSwitch : MonoBehaviour
             currentXRMovement.UpdateState();
     }
 
+    /// <summary>
+    /// This function invokes the on Move event with the passed parameter.
+    /// </summary>
+    /// <param name="canMove">state of movement</param>
     public void MoveLock(bool canMove)
     { 
         onMove?.Invoke(canMove);
     }
 
+    /// <summary>
+    /// This function is called, 
+    /// when Game settings change.
+    /// Checks the variables of XRMovementSwitch to match with new settings,
+    /// and changes the movement type to match the new settings selected movement type.
+    /// Also calls the StartState function and ExitState function on current movement type.
+    /// </summary>
+    /// <param name="newSettings"></param>
     public void CheckMovementType(GameSettings newSettings)
     {
         if(preferredHand != newSettings.CurrentHand)
@@ -104,6 +125,10 @@ public class XRMovementSwitch : MonoBehaviour
         ready = true;
     }
 
+    /// <summary>
+    /// This function changes the current XR movement type to new by enum using the switch case.
+    /// </summary>
+    /// <param name="newMovementType"></param>
     void SetCurrentXRMovementType(MovementType newMovementType)
     {
         switch (newMovementType)
@@ -125,6 +150,10 @@ public class XRMovementSwitch : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This function returns the current movement type as enum
+    /// </summary>
+    /// <returns>enum representing the movement type</returns>
     public MovementType GetCurrentMovementType()
     {
         return currentMovementType;

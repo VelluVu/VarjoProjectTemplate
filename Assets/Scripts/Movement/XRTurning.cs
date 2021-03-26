@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.XR;
 
 /// <summary>
+/// @Author: Veli-Matti Vuoti
 /// This class handles the turning if toggled on from menu
 /// </summary>
 public class XRTurning : MonoBehaviour
@@ -31,35 +32,47 @@ public class XRTurning : MonoBehaviour
     }
 
     private void OnEnable() {
-        XRCustomRig.onHeadMountedDeviceIsPresent += AlignHMD;
         XRMovementSwitch.onMove += IsMoving;
         XRSettings.onSettingChange += OnSettingChange;
         XRInputManager.onPrimaryButtonDown += AcceptTurn;
     }
 
     private void OnDisable() {
-        XRCustomRig.onHeadMountedDeviceIsPresent -= AlignHMD;
         XRMovementSwitch.onMove -= IsMoving;
         XRSettings.onSettingChange -= OnSettingChange;
         XRInputManager.onPrimaryButtonDown -= AcceptTurn;
     }
 
+    /// <summary>
+    /// This function is called,
+    /// when settings are changed.
+    /// Changes is turning toggled boolean to match setting value.
+    /// </summary>
+    /// <param name="newSetting">new settings object</param>
     public void OnSettingChange(GameSettings newSetting)
     {
         isTurningToggled = newSetting.SnapTurningOn;
         Debug.Log(this.gameObject.name + " Snap turning is : " + isTurningToggled);
     }
 
+    /// <summary>
+    /// This function is called,
+    /// when XRMovementSwitch onMove is called.
+    /// Used to toggle the moving boolean.
+    /// </summary>
+    /// <param name="isMoving">new state for moving</param>
     public void IsMoving(bool isMoving)
     {
         moving = isMoving;
     }
 
-    public void AlignHMD(InputDevice device) 
-    {
-       hmd.forward = rig.transform.forward;
-    }
-
+    /// <summary>
+    /// This function is called,
+    /// when primarybutton is down.
+    /// turns the player 90 degrees left or right, 
+    /// depending on the hmd rotation.
+    /// </summary>
+    /// <param name="device">device which is used for press</param>
     public void AcceptTurn(InputDeviceCharacteristics device)
     {
         if(!isTurningToggled)
@@ -97,6 +110,9 @@ public class XRTurning : MonoBehaviour
         SnapTurn();
     }
 
+    /// <summary>
+    /// This function tracks the possibility for snapturning and invokes the events.
+    /// </summary>
     private void SnapTurn()
     {
         dotProduct = Vector3.Dot(hmd.forward, rig.transform.forward);

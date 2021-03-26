@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// @Author: Veli-Matti Vuoti
+/// This class handles the Point of interest Gaze Movement.
+/// </summary>
 public class XRPOIGazeMovement : IXRMovement
 {
     XRMovementSwitch control;
@@ -27,6 +31,14 @@ public class XRPOIGazeMovement : IXRMovement
         POIGazeMovement();
     }
 
+    /// <summary>
+    /// This function handles the Point of interest gaze movement,
+    /// by shooting ray and check the hit on POI layer.
+    /// When hits and calculates the distance of target.
+    /// If hits and not too close invokes some events,
+    /// and if using controllers check controller primary input to call function Move Towards Point.
+    /// else if not using controllers call Move Towards Point on hmd primary button press
+    /// </summary>
     public void POIGazeMovement()
     {
         RaycastHit hit; 
@@ -83,6 +95,11 @@ public class XRPOIGazeMovement : IXRMovement
         }
     }
 
+    /// <summary>
+    /// This function moves the player towards the point of interest,
+    /// By adding direction vector * speed * deltatime to rig position.
+    /// </summary>
+    /// <param name="target"></param>
     void MoveTowardsPoint(Transform target)
     {
         Vector3 moveDir = (target.position - control.rig.hmd.position).normalized;

@@ -2,7 +2,8 @@ using UnityEngine;
 using UnityEngine.XR;
 
 /// <summary>
-/// This class does the teleportation movement.
+/// @Author: Veli-Matti Vuoti
+/// This class handles the teleportation movement.
 /// </summary>
 public class XRTeleportMovement : IXRMovement
 {
@@ -31,6 +32,13 @@ public class XRTeleportMovement : IXRMovement
         Debug.Log("Exited MovementType " + this);
     }
 
+    /// <summary>
+    /// This function is called,
+    /// when primarybutton is pressed.
+    /// Uses the correct function, 
+    /// when Input Device Characteristics match.
+    /// </summary>
+    /// <param name="deviceCharacteristics">Input Device Characteristics can be used to check the device</param>
     private void OnButtonDown(InputDeviceCharacteristics deviceCharacteristics)
     {
         if(deviceCharacteristics == InputDeviceCharacteristics.HeadMounted)
@@ -47,6 +55,10 @@ public class XRTeleportMovement : IXRMovement
         }
     }
 
+    /// <summary>
+    /// This function Calls the Teleport function, 
+    /// when can teleport and hmd device primary button pressed
+    /// </summary>
     private void OnHMDButtonDown()
     {
         if(canTele)
@@ -54,6 +66,11 @@ public class XRTeleportMovement : IXRMovement
             Teleport();
         }
     }
+
+    /// <summary>
+    /// This function Calls the Teleport function, 
+    /// when teleporting is possible and XRMovementSwitch movement hand is left.
+    /// </summary>
     private void OnLeftControllerButtonDown()
     {
         if(canTele && control.preferredHand == PreferredHand.Left)
@@ -61,6 +78,11 @@ public class XRTeleportMovement : IXRMovement
             Teleport();
         }
     }
+
+    /// <summary>
+    /// This function Calls the Teleport function, 
+    /// when teleporting is possible and XRMovementSwitch movement hand is right.
+    /// </summary>
     private void OnRightControllerButtonDown()
     {
         if(canTele && control.preferredHand == PreferredHand.Right)
@@ -81,6 +103,12 @@ public class XRTeleportMovement : IXRMovement
         } 
     }
 
+    /// <summary>
+    /// This function checks the possibility of teleport with controllers, 
+    /// by raycasting and hitting only teleport layer.
+    /// Also calls the events for teleport possibility 
+    /// for MoveEventListener to adjust the visual indicator.
+    /// </summary>
     void WithControllers()
     {
         Transform c = control.rig.GetControllerTransform(control.preferredHand);
@@ -121,6 +149,12 @@ public class XRTeleportMovement : IXRMovement
         }
     }
 
+    /// <summary>
+    /// This function checks the possibility for teleport with hmd.
+    /// by raycasting and hitting only teleport layer.
+    /// Also calls the events for teleport possibility 
+    /// for MoveEventListener to adjust the visual indicator.
+    /// </summary>
     void WithHMD()
     {
         //TODO : Make teleport movement that works with headset button
@@ -159,6 +193,11 @@ public class XRTeleportMovement : IXRMovement
         }
     }
 
+    /// <summary>
+    /// This function teleports the player, 
+    /// by changing the position of the rig into hit point position.
+    /// and uses the haptic function from XRCustomRig.
+    /// </summary>
     void Teleport()
     {
         if(control.usingControllers)
