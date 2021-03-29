@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// @Author: Veli-Matti Vuoti
+/// This Class handles the logic of main menu buttons.
+/// </summary>
 public class MenuUI : MonoBehaviour
 {
     SceneLoader sceneLoader;

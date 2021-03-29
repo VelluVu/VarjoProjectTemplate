@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// @Author: Veli-Matti Vuoti
+/// This class represents a popup ui-element, using IUIPopUp interface.
+/// </summary>
 public class POIUI : MonoBehaviour, IUIPopUp
 {
     [SerializeField]Canvas canvas;

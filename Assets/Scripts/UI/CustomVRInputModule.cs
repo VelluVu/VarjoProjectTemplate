@@ -2,6 +2,10 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.XR;
 
+/// <summary>
+/// @Author: Veli-Matti Vuoti
+/// This class handles the input with unity event system with VR device inputs.
+/// </summary>
 public class CustomVRInputModule : BaseInputModule
 {
     [Tooltip("Drag in 0 = hmd camera, 1 = leftcontroller pointer camera, 2 = rightcontroller pointer camera")]

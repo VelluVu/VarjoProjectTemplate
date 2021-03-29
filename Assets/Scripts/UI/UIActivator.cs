@@ -2,7 +2,8 @@ using UnityEngine;
 
 /// <summary>
 /// @Author: Veli-Matti Vuoti
-/// This class activates the UI when hit the UItrigger
+/// This class activates the triggerUI function in UITrigger, 
+/// when looking at the object with UITrigger component.
 /// </summary>
 public class UIActivator : MonoBehaviour
 {

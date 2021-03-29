@@ -2,6 +2,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// @Author: Veli-Matti Vuoti
+/// This class presents the setting panel.
+/// </summary>
 public class SettingPanel : MonoBehaviour
 {
     public TextMeshProUGUI textMesh;
@@ -15,6 +19,10 @@ public class SettingPanel : MonoBehaviour
         textMesh = transform.GetChild(2).GetComponent<TextMeshProUGUI>();
     }
 
+    /// <summary>
+    /// Changes the text for textmesh component.
+    /// </summary>
+    /// <param name="text">new text string</param>
     public void SetText(string text)
     {
         textMesh.text = text;

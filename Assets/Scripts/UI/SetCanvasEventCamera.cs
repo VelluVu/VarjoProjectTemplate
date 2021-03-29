@@ -1,5 +1,11 @@
 using UnityEngine;
 
+/// <summary>
+/// @Author: Veli-Matti Vuoti
+/// This Class changes event camera of the canvas.
+/// Attach this as an component for the object with canvas,
+/// to make UI-interactions possible to interact.
+/// </summary>
 public class SetCanvasEventCamera : MonoBehaviour
 {
     Canvas canvas;
@@ -19,6 +25,11 @@ public class SetCanvasEventCamera : MonoBehaviour
         XRSettings.onSettingChange -= SettingChanged;
     }
 
+    /// <summary>
+    /// This function changes the event camera to new camera.
+    /// Called from VR Custom Input Module.
+    /// </summary>
+    /// <param name="cam">new event camera</param>
     public void SetWorldCamera(Camera cam)
     {
         if(cam != null)
@@ -29,6 +40,11 @@ public class SetCanvasEventCamera : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This function is called on Setting Change event
+    /// to invoke on Canvas Enable event.
+    /// </summary>
+    /// <param name="settings">new settings</param>
     public void SettingChanged(GameSettings settings)
     {
         if(settings.PreviousHand != settings.CurrentHand)

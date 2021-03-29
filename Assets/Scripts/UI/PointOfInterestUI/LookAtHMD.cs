@@ -1,6 +1,7 @@
 using UnityEngine;
 
 /// <summary>
+/// @Author: Veli-Matti Vuoti
 /// This class makes canvas always face towards hmd.
 /// </summary>
 public class LookAtHMD : MonoBehaviour

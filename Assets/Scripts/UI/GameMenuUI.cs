@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Author: Veli-Matti Vuoti
+/// This class handles the logic of the game menu ui-elements.
+/// </summary>
 public class GameMenuUI : MonoBehaviour
 {
     [SerializeField] Button settingsButton;

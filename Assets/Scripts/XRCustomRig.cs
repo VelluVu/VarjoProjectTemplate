@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -52,16 +51,18 @@ public class XRCustomRig : MonoBehaviour
     private void OnEnable() {
         InputDevices.deviceDisconnected += DeviceDisconnected;
         InputDevices.deviceConnected += DeviceConnected;
+        XRSettings.onSettingChange += SettingsChanged;
     }
 
     private void OnDisable() {
         InputDevices.deviceDisconnected -= DeviceDisconnected;
         InputDevices.deviceConnected -= DeviceConnected;
+        XRSettings.onSettingChange -= SettingsChanged;
     }
 
     /// <summary>
-    /// On Device Disconnected event, this function is called to 
-    /// change the device related class variables.
+    /// this function is called on Device Disconnected event.
+    /// Changes the device related class variables.
     /// </summary>
     /// <param name="device">Disconnected Device</param>
     void DeviceDisconnected(InputDevice device)
@@ -89,8 +90,8 @@ public class XRCustomRig : MonoBehaviour
     }
 
     /// <summary>
-    /// On Device Connected event, this function is called to
-    /// change the device related class variables.
+    /// This function is called on Device Connected event.
+    /// Changes the device related class variables.
     /// </summary>
     /// <param name="device"></param>
     void DeviceConnected(InputDevice device)
@@ -117,6 +118,22 @@ public class XRCustomRig : MonoBehaviour
             onHeadMountedDeviceIsPresent?.Invoke(device);
             headMounted = device;
         }
+    }
+
+    /// <summary>
+    /// This function is called on Setting Change event.
+    /// Updates the main input device depending on the current preferred hand.
+    /// </summary>
+    /// <param name="newSettings"></param>
+    private void SettingsChanged(GameSettings newSettings)
+    {
+
+        if(newSettings.CurrentHand == PreferredHand.Hmd)
+            input.UpdateMainInputDevice(headMounted);
+        else if(newSettings.CurrentHand == PreferredHand.Left)
+            input.UpdateMainInputDevice(GetControllerDevice(newSettings.CurrentHand));
+        else if(newSettings.CurrentHand == PreferredHand.Right)
+            input.UpdateMainInputDevice(GetControllerDevice(newSettings.CurrentHand));
     }
 
     private void Update() 
