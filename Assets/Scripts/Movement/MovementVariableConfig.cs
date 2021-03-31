@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
 /// <summary>
+/// @Author: Veli-Matti Vuoti
 /// This Scriptable object holds movement related variable values.
 /// </summary>
 [CreateAssetMenu(menuName = "MovementVariables")]

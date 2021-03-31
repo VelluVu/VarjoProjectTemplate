@@ -1,7 +1,8 @@
 using UnityEngine;
 
 /// <summary>
-/// This class does the lerping movement
+/// @Author: Veli-Matti Vuoti
+/// This class handles the lerping movement
 /// </summary>
 public class XRLerpMovement : IXRMovement
 {
@@ -22,6 +23,12 @@ public class XRLerpMovement : IXRMovement
         LerpMovementTrigger.onWaypointMove -= MoveTowardsWP;
     }
 
+    /// <summary>
+    /// This function is called,
+    /// when LerpMovementTrigger on Waypoint Move event is invoked.
+    /// Sets new target waypoint index.
+    /// </summary>
+    /// <param name="newWpIndex">new waypoint index</param>
     public void MoveTowardsWP(int newWpIndex)
     {     
         Debug.Log(newWpIndex + " <= " + control.Wps.Length);
@@ -35,6 +42,13 @@ public class XRLerpMovement : IXRMovement
         }
     }
     
+    /// <summary>
+    /// This function Moves player towards target waypoint, 
+    /// if there are any waypoints, 
+    /// and moving boolean is true.
+    /// When reached the waypoint as linear interpolation value is 1.0, 
+    /// then sets moving false and removes the move locking.
+    /// </summary>
     public void UpdateState()
     {
         if(control.Wps == null || control.Wps.Length == 0)

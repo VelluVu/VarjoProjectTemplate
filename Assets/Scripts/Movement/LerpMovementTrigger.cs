@@ -1,5 +1,7 @@
 /// <summary>
-/// This Class triggers the lerp movement.
+/// @Author: Veli-Matti Vuoti
+/// This Class triggers the lerp movement, 
+/// by invoking the onWayPointMove event.
 /// </summary>
 public class LerpMovementTrigger
 {

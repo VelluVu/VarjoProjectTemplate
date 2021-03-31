@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 
 /// <summary>
+/// @Author: Veli-Matti Vuoti
 /// This class listens the movement related events and indicates the possibility of movement for player.
 /// </summary>
 public class MoveEventListener : MonoBehaviour
@@ -60,12 +61,26 @@ public class MoveEventListener : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This Function is called, 
+    /// when on Non Correct Move Angle event is invoked from XRGazeMovement.
+    /// Deactivates the gaze move visual.
+    /// </summary>
+    /// <param name="hmd">head mounted device transform</param>
     private void HideGazeVisual(Transform hmd)
     {
         if(gazeMoveVisual != null)
             gazeMoveVisual.SetActive(false);
     }
 
+    /// <summary>
+    /// This function is called,
+    /// when on Correct Move Angle event is invoked from XRGazeMovement.
+    /// Instantiates the gaze move visual and projects it on to the ground plane.
+    /// if already the gaze move visual exists activates it and projects it on to the ground plane.
+    /// TODO: Change ProjectOnPlane second parameter Vector2.up into ground normal and get normal from raycast hit data if necessary.
+    /// </summary>
+    /// <param name="hmd">head mounted device transform</param>
     private void ShowGazeVisual(Transform hmd)
     {
         this.hmd = hmd;
@@ -83,6 +98,12 @@ public class MoveEventListener : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This function is called when on Able to Move is invoked from XRPOIGazeMovement.
+    /// Gets material swapper component from gazed target, 
+    /// and uses it to set highlight material on target.
+    /// </summary>
+    /// <param name="target"></param>
     private void CanMove(Transform target)
     {
         if(target != null)
@@ -93,6 +114,17 @@ public class MoveEventListener : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This function is called,
+    /// when on Not Able to Move is invoked from XRPOIGazeMovement.
+    /// if material swapper is not null, 
+    /// sets the normal material of that material swapper, 
+    /// and nulls the material swapper.
+    /// if target is not null, 
+    /// sets material swapper to match target material swapper,
+    /// and sets it material to normal material.
+    /// </summary>
+    /// <param name="target"></param>
     private void CantMove(Transform target)
     {
         if(matSwap != null)
@@ -109,6 +141,12 @@ public class MoveEventListener : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This function is called,
+    /// when on Teleport not Possible is invoked from XRTeleportMovement.
+    /// Deactivates the teleport indicator.
+    /// </summary>
+    /// <param name="hit"></param>
     private void HideTeleportIndicator(RaycastHit hit)
     {
         
@@ -118,6 +156,16 @@ public class MoveEventListener : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This function is called,
+    /// when on Teleport Possible is invoked from XRTeleportMovement.
+    /// Instantiates teleport indicator and sets it position and rotation.
+    /// if already instantiated teleport indicator,
+    /// then activates the current one and sets the position and rotation.
+    /// Position is set to match the raycast hit info hit point.
+    /// Rotation is set to align the teleport indicator on the ground.
+    /// </summary>
+    /// <param name="hit">raycast hit info</param>
     private void ShowTeleportIndicator(RaycastHit hit)
     {
         if(teleportIndicator == null)
@@ -133,6 +181,16 @@ public class MoveEventListener : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This function is called,
+    /// when on Turning Possible is invoked from SnapTurning.
+    /// Instantiates the snap turning visual.
+    /// if already instantiated, 
+    /// then activates the snap turning visual.
+    /// Uses SnapTurnVisualAnimate class to activate the visual animation, 
+    /// and SetPosAndRot sets it initial values.
+    /// </summary>
+    /// <param name="right"></param>
     private void ShowSnapTurnVisual(bool right)
     {
         if(snapTurnVisual == null)
@@ -154,6 +212,12 @@ public class MoveEventListener : MonoBehaviour
         
     }
     
+    /// <summary>
+    /// This function is called,
+    /// when on Turning not Possible is invoked from SnapTurning.
+    /// Deactivates the snapTurnVisual.
+    /// </summary>
+    /// <param name="right"></param>
     private void HideSnapTurnVisual(bool right)
     {
         if(snapTurnVisual != null)

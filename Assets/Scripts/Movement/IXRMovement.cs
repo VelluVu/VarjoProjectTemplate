@@ -1,4 +1,5 @@
 /// <summary>
+/// @Author: Veli-Matti Vuoti
 /// This is an interface used to split 
 /// the different movement styles into own runnable classes, 
 /// that inherit from this interface.

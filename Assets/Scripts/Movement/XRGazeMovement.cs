@@ -1,7 +1,8 @@
 using UnityEngine;
 
 /// <summary>
-/// This class does the Gaze movement.
+/// @Author: Veli-Matti Vuoti
+/// This class handles the Gaze movement.
 /// </summary>
 public class XRGazeMovement : IXRMovement
 {
@@ -31,6 +32,14 @@ public class XRGazeMovement : IXRMovement
         GazeMovement();   
     }
 
+    /// <summary>
+    /// This function handles the gazing, 
+    /// and checking the possibility of movement with transform eulerangles.
+    /// When possible to move, 
+    /// calls the MoveToGazeDirection on continuous Primary Button press.
+    /// Also invokes the events for other classes.
+    /// For example on Correct Move Angle MoveEventListener to handle the visual.
+    /// </summary>
     private void GazeMovement()
     {
         float xAngle = control.rig.hmd.transform.rotation.eulerAngles.x;
@@ -70,6 +79,10 @@ public class XRGazeMovement : IXRMovement
             }
         }
     }
+
+    /// <summary>
+    /// This function moves the player towards the gaze direction.
+    /// </summary>
     void MoveToGazeDirection()
     {
         Vector3 moveDir = new Vector3(control.rig.hmd.transform.forward.x, 

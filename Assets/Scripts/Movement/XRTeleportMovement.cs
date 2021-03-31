@@ -157,7 +157,6 @@ public class XRTeleportMovement : IXRMovement
     /// </summary>
     void WithHMD()
     {
-        //TODO : Make teleport movement that works with headset button
         bool hits = Physics.Raycast(control.rig.hmd.position, 
                                     control.rig.hmd.forward, 
                                     out hit, 
