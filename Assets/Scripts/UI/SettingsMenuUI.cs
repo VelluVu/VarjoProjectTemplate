@@ -63,7 +63,7 @@ public class SettingsMenuUI : MonoBehaviour
         //Debug.Log(newPref + " " + (int)newPref + " " + (PreferredHand)newPref);
 
         XRSettings.Instance.ChangePreferredHand(newPref);
-        settingPanel.SetText("Preferred Hand: " + newPref.ToString().ToUpper());
+        settingPanel.SetText("Main Device: " + newPref.ToString());
     }
 
     public void ChangePreferredHandLeft(SettingPanel settingPanel)
@@ -74,7 +74,7 @@ public class SettingsMenuUI : MonoBehaviour
         if(!XRSettings.Instance.settings.ControllersInUse)
         {
             XRSettings.Instance.ChangePreferredHand(newPref);
-            settingPanel.SetText("Preferred Hand: " + newPref.ToString());
+            settingPanel.SetText("Main Device: " + newPref.ToString());
             return;
         }
 
@@ -93,7 +93,7 @@ public class SettingsMenuUI : MonoBehaviour
         }
 
         XRSettings.Instance.ChangePreferredHand(newPref);
-        settingPanel.SetText("Preferred Hand: " + newPref.ToString());
+        settingPanel.SetText("Main Device: " + newPref.ToString());
     }
 
     public void ChangeMovementTypeRight(SettingPanel settingPanel)

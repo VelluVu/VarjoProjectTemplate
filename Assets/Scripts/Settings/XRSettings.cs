@@ -97,7 +97,6 @@ public class XRSettings : Singleton<XRSettings>
 
     private void ControllersConnected(List<InputDevice> controllers)
     {
-      
         if(!settings.ControllersInUse)
         {    
             settings.ControllersInUse = true;
@@ -232,6 +231,28 @@ public class XRSettings : Singleton<XRSettings>
         settings.PreferredHand = PreferredHand.Hmd;
         settings.PreviousHand = PreferredHand.Hmd;
         settings.ClearDirty();
+
+        return settings;
+    }
+
+    /// <summary>
+    /// This function double checks the settings after the rig is initialized.
+    /// </summary>
+    /// <param name="rig">XRCustomRig</param>
+    /// <returns></returns>
+    public GameSettings CheckTheSettings(XRCustomRig rig)
+    {
+        
+        if(!rig.hasControllers)
+        {
+            if(settings.ControllersInUse == true) 
+            {
+                Debug.Log("No controllers presence detected, changing settings!");
+                settings.ControllersInUse = false;
+                settings.PreferredHand = PreferredHand.Hmd;
+            }
+        }
+
         return settings;
     }
     

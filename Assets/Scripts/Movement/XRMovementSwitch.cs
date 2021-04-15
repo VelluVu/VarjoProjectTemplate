@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 
 /// <summary>
 /// @Author: Veli-Matti Vuoti
@@ -27,7 +28,6 @@ public class XRMovementSwitch : MonoBehaviour
     private void Awake() {
         rig = GetComponent<XRCustomRig>();
         InitMovementStyles();
-        InitWaypointArray();
     }
 
     /// <summary>
@@ -41,40 +41,45 @@ public class XRMovementSwitch : MonoBehaviour
         xRTeleportMovement = new XRTeleportMovement();
     }
 
+    private void OnEnable() {      
+        XRSettings.onSettingChange += CheckMovementType;
+        NotifyWaypointsPresence.onWPSDetected += OnWPSDetected;
+    }
+    private void OnDisable() {    
+        XRSettings.onSettingChange -= CheckMovementType;
+        NotifyWaypointsPresence.onWPSDetected -= OnWPSDetected;
+    }
+
     /// <summary>
-    /// Initializes the waypoints for linear interpolation movement,
-    /// by searching object named Waypoints
-    /// if using LERP movement have waypoints setup on the scene with parent object Waypoints !
+    /// This function initializes the waypoints for linear interpolation movement,
+    /// when NotifyWaypointsPresence class onWPSDetected is called.
+    /// If the LERP movement is used, 
+    /// there has to be a gameObject in scene with the NotifyWaypointsPresence class as a component,
+    /// and that gameObjects child gameobjects will be assigned as the waypoints.
     /// </summary>
-    public void InitWaypointArray()
+    private void OnWPSDetected(Transform t)
     {
         if(Wps == null || Wps.Length == 0)
         {
-            GameObject waypoints = GameObject.Find("Waypoints");
-            if(waypoints != null)
+            Debug.Log("Populating the waypoints array.");
+            Wps = new Transform[t.childCount];
+            for (var i = 0; i < Wps.Length; i++)
             {
-                Wps = new Transform[waypoints.transform.childCount];
-                for (var i = 0; i < Wps.Length; i++)
-                {
-                    Wps[i] = waypoints.transform.GetChild(i);   
-                }
-            }
-            else
-            {
-                Debug.LogWarning("Could not populate the Wps array for LerpMovement. Can't find the Waypoints object from scene hierarchy!");
+                Wps[i] = t.GetChild(i);   
             }
         }
         else
         {
-            Debug.Log("Wps array for LerpMovement is custom filled.");
-        }
-    }
+            Debug.Log("Waypoints array not empty, clearing the waypoints array.");
+            Array.Clear(Wps,0, Wps.Length);
 
-    private void OnEnable() {      
-        XRSettings.onSettingChange += CheckMovementType;
-    }
-    private void OnDisable() {    
-        XRSettings.onSettingChange -= CheckMovementType;
+            Debug.Log("Populating the waypoints array.");
+            Wps = new Transform[t.childCount];
+            for (var i = 0; i < Wps.Length; i++)
+            {
+                Wps[i] = t.GetChild(i);   
+            }
+        }
     }
 
     private void Update() 

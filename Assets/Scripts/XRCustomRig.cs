@@ -22,10 +22,10 @@ public class XRCustomRig : MonoBehaviour
     InputDevice headMounted;
     List<InputDevice> controllers = new List<InputDevice>();
 
-    [HideInInspector]public bool isPresent;
-    [HideInInspector]public bool hasControllers;
-    [HideInInspector]public bool hasLeftController;
-    [HideInInspector]public bool hasRightController;
+    public bool isPresent;
+    public bool hasControllers;
+    public bool hasLeftController;
+    public bool hasRightController;
 
     public delegate void DevicesDelegate(List<InputDevice> devices);
     public static event DevicesDelegate onControllersArePresent;
@@ -46,6 +46,10 @@ public class XRCustomRig : MonoBehaviour
             input = GetComponent<XRInputManager>();
         if(cooldownSystem == null)
             cooldownSystem = FindObjectOfType<CooldownSystem>();
+    }
+
+    private void Start() {
+        XRSettings.Instance.CheckTheSettings(this);
     }
 
     private void OnEnable() {
