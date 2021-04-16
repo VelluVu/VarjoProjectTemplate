@@ -48,7 +48,9 @@ public class XRCustomRig : MonoBehaviour
             cooldownSystem = FindObjectOfType<CooldownSystem>();
     }
 
-    private void Start() {
+    IEnumerator Start() {
+        yield return new WaitForSeconds(5f);
+        //Debug.Log("Checking controllers presence...");
         XRSettings.Instance.CheckTheSettings(this);
     }
 
@@ -91,6 +93,9 @@ public class XRCustomRig : MonoBehaviour
             isPresent = false;
             onHeadMountedDeviceDisconnected?.Invoke();
         }
+        if(!hasLeftController || !hasRightController)
+            hasControllers = false;
+        
     }
 
     /// <summary>
@@ -121,6 +126,10 @@ public class XRCustomRig : MonoBehaviour
             isPresent = true;
             onHeadMountedDeviceIsPresent?.Invoke(device);
             headMounted = device;
+        }
+        if(hasLeftController && hasRightController)
+        {
+            hasControllers = true;
         }
     }
 
@@ -252,6 +261,7 @@ public class XRCustomRig : MonoBehaviour
                 //Debug.Log(controllers[0].characteristics);
                 //Debug.Log(controllers[1].characteristics);
                 Debug.Log("Both Controllers are present!");
+                hasControllers = true;
             }
         }
     }
